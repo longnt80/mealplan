@@ -1,28 +1,49 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+import THEME from './common/theme';
+import globalStyles from './common/globalStyles';
+
+import Navbar from './components/Navbar';
+import NextMeal from './components/NextMeal';
+import AllRecipes from './components/AllRecipes';
+import AddRecipe from './components/AddRecipe';
+import ViewRecipe from './components/ViewRecipe';
+import EditRecipe from './components/EditRecipe';
+import Plan from './components/Plan';
+import Shopping from './components/Shopping';
+import Layout from './components/Layout';
+import NoMatch from './components/NoMatch';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <MuiThemeProvider theme={THEME}>
+        <CssBaseline />
+        <BrowserRouter>
+            <div className="App">
+              <Navbar />
+              <Layout>
+                <Switch>
+                  <Route exact path="/" component={NextMeal} />
+                  {/* Route for Recipes */}
+                  <Route path="/recipes" component={AllRecipes} />
+                  <Route path="/add-recipe" component={AddRecipe} />
+                  <Route path="/view-recipe/:id" component={ViewRecipe} />
+                  <Route path="/edit-recipe/:id" component={EditRecipe} />
+
+                  <Route path="/plan" component={Plan} />
+                  <Route path="/shopping" component={Shopping} />
+                  <Route component={NoMatch} />
+                </Switch>
+              </Layout>
+            </div>
+        </BrowserRouter>
+      </MuiThemeProvider>
     );
   }
 }
 
-export default App;
+export default withStyles(globalStyles)(App);
