@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -6,6 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+
+import { getAllRecipes } from '../store/actions/recipeActions';
 
 const styles = {
   paper: {
@@ -16,6 +19,11 @@ const styles = {
 }
 
 class AllRecipes extends Component {
+
+  componentDidMount() {
+    const { getAllRecipes } = this.props;
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -44,4 +52,11 @@ AllRecipes.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(AllRecipes);
+const mapDispatchFromProps = dispatch => ({
+  getAllRecipes: () => dispatch(getAllRecipes()),
+});
+
+export default connect(
+  null,
+  mapDispatchFromProps
+)(withStyles(styles)(AllRecipes));
