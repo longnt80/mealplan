@@ -1,7 +1,7 @@
 import {
   ADD_RECIPE_SUCCESS,
   ADD_RECIPE_ERROR
-} from '../actions/recipeActions';
+} from '../actions/newRecipeActions';
 
 const initialState = {
   loading: false,

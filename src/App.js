@@ -31,9 +31,8 @@ class App extends Component {
                   {/* Route for Recipes */}
                   <Route path="/recipes" component={AllRecipes} />
                   <Route path="/add-recipe" component={AddRecipe} />
-                  <Route path="/view-recipe/:id" component={ViewRecipe} />
-                  <Route path="/edit-recipe/:id" component={EditRecipe} />
-
+                  <Route path="/recipe/view/:id" render={props => <ViewRecipe {...props} />} />
+                  <Route path="/recipe/edit/:id" render={props => <EditRecipe {...props} />} />
                   <Route path="/plan" component={Plan} />
                   <Route path="/shopping" component={Shopping} />
                   <Route component={NoMatch} />

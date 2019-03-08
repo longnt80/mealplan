@@ -7,28 +7,9 @@ export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
 export const UPDATE_INGREDIENT_FIELD = 'UPDATE_INGREDIENT_FIELD';
 export const UPDATE_FIELD = 'UPDATE_FIELD';
+export const RESET_RECIPE_FIELDS = 'RESET_RECIPE_FIELDS';
 
-
-export const getAllRecipes = () => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
-    const firestore = getFirestore();
-    // const firebase = getFirebase();
-
-    firestore.collection('recipe').get()
-      .then(recipes => {
-        console.log("Hello");
-
-        console.log(recipes);
-      })
-
-    // dispatch({
-    //   type: GET_ALL_RECIPES,
-    //   data: data
-    // });
-  }
-}
-
-export const addRecipeToDB = recipe => {
+export const addRecipe = recipe => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     // const firebase = getFirebase();
     const firestore = getFirestore();
@@ -39,24 +20,24 @@ export const addRecipeToDB = recipe => {
     return firestore.collection('recipes').add({
       ...recipe
     })
-    .then((docRef) => ({
-      success: true,
-      docRef
-    }))
-    .catch( error => ({
-      success: false,
-      error
-    }));
+    .then((docRef) => {
+      dispatch({ type: ADD_RECIPE_SUCCESS });
+
+      return true;
+    })
+    .catch( error => {
+      dispatch({
+        type: ADD_RECIPE_ERROR,
+        error
+      });
+
+      return false;
+    });
   }
 };
 
-export const addRecipeSuccess = () => ({
-  type: ADD_RECIPE_SUCCESS
-});
-
-export const addRecipeError = (error) => ({
-  type: ADD_RECIPE_ERROR,
-  error
+export const resetRecipeFields = () => ({
+  type: RESET_RECIPE_FIELDS,
 });
 
 export const updateRecipe = (id, updatedRecipe) => ({

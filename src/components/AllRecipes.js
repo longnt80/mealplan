@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-import { getAllRecipes } from '../store/actions/recipeActions';
+import { getAllRecipes } from '../store/actions/recipesActions';
 
 const styles = {
   paper: {
@@ -22,10 +22,27 @@ class AllRecipes extends Component {
 
   componentDidMount() {
     const { getAllRecipes } = this.props;
+
+    getAllRecipes();
+  }
+
+  handleClick = recipe => e => {
+    const { history } = this.props;
+
+    history.push(`/recipe/view/${recipe.id}`, { recipe: { ...recipe } });
+  }
+
+  renderList = () => {
+    const { recipes, classes } = this.props;
+    if (!recipes) return "Loading list ..."
+
+    return recipes.map((recipe, index) => (
+      <Paper key={recipe.id} className={classes.paper} onClick={this.handleClick(recipe)}>{recipe.recipeName}</Paper>
+    ));
   }
 
   render() {
-    const { classes } = this.props;
+
     return (
       <div>
         <div>
@@ -35,14 +52,10 @@ class AllRecipes extends Component {
           label="Search a recipe"
           margin="normal"
         />
-        <Paper className={classes.paper}>Here's one recipe</Paper>
-        <Paper className={classes.paper}>Here's one recipe</Paper>
-        <Paper className={classes.paper}>Here's one recipe</Paper>
-        <Paper className={classes.paper}>Here's one recipe</Paper>
-        <Paper className={classes.paper}>Here's one recipe</Paper>
-        <Paper className={classes.paper}>Here's one recipe</Paper>
-        <Paper className={classes.paper}>Here's one recipe</Paper>
-        <Paper className={classes.paper}>Here's one recipe</Paper>
+
+        <div>
+          {this.renderList()}
+        </div>
       </div>
     );
   }
@@ -52,11 +65,15 @@ AllRecipes.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => ({
+  recipes: state.recipesReducer,
+});
+
 const mapDispatchFromProps = dispatch => ({
   getAllRecipes: () => dispatch(getAllRecipes()),
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchFromProps
 )(withStyles(styles)(AllRecipes));

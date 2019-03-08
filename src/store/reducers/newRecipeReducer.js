@@ -1,13 +1,10 @@
 import {
-  ADD_RECIPE_TO_DB,
-  // UPDATE_RECIPE,
-  // DELETE_RECIPE,
-  ADD_RECIPE_ERROR,
   ADD_INGREDIENT,
   DELETE_INGREDIENT,
   UPDATE_INGREDIENT_FIELD,
   UPDATE_FIELD,
-} from '../actions/recipeActions';
+  RESET_RECIPE_FIELDS,
+} from '../actions/newRecipeActions';
 
 const time = Date.now();
 
@@ -51,6 +48,8 @@ const recipeReducer = (state = initialRecipe, action) => {
         ...state,
         [action.name]: action.value
       };
+    case RESET_RECIPE_FIELDS:
+      return {...initialRecipe};
     default:
       return state;
   }

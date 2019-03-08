@@ -13,14 +13,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
 
 import {
-  addRecipeToDB,
-  addRecipeSuccess,
-  addRecipeError,
+  addRecipe,
   addIngredientField,
   deleteIngredientField,
   updateIngredientFields,
   updateFields,
-} from '../store/actions/recipeActions';
+  resetRecipeFields,
+} from '../store/actions/newRecipeActions';
 
 const styles = theme => ({
   paper: {
@@ -61,7 +60,7 @@ class MyForm extends Component {
 
     updateFields(name, value);
 
-    handleChange(e);
+    handleChange(e); // Formik
   }
 
   addIngredient = () => {
@@ -191,20 +190,19 @@ class MyForm extends Component {
 }
 
 const mapStateTorops = state => ({
-  recipe: state.recipeReducer
+  recipe: state.newRecipeReducer
 });
 
 const mapDispatchToProps = dispatch => ({
   addIngredientField: ingredient => dispatch(addIngredientField(ingredient)),
-  addRecipeSuccess: () => dispatch(addRecipeSuccess()),
-  addRecipeError: (error) => dispatch(addRecipeError(error)),
   deleteIngredientField: newList => dispatch(deleteIngredientField(newList)),
   updateIngredientFields: (idx, value) => dispatch(updateIngredientFields(idx, value)),
-  addRecipeToDB: recipe => dispatch(addRecipeToDB(recipe)),
+  addRecipe: recipe => dispatch(addRecipe(recipe)),
   updateFields: (name, value) => dispatch(updateFields(name, value)),
+  resetRecipeFields: () => dispatch(resetRecipeFields()),
 });
 
-const EnhancedForm = withStyles(styles)(withFormik({
+const EnhancedForm = withFormik({
   mapPropsToValues: props => {
     return {
       ...props.recipe,
@@ -212,19 +210,20 @@ const EnhancedForm = withStyles(styles)(withFormik({
   },
   enableReinitialize: true,
   handleSubmit: (values, formikBag) => {
-    const { addRecipeToDB, addRecipeSuccess, addRecipeError, history } = formikBag.props;
+    const { addRecipe, resetRecipeFields, history } = formikBag.props;
 
-    addRecipeToDB(values).then((res) => {
-      console.log(res);
-      if (res.success) {
-        addRecipeSuccess();
+    addRecipe(values).then((success) => {
+      console.log(success);
+      if (success) {
+        console.log("Success!!!");
+        resetRecipeFields();
         history.push('/recipes');
       } else {
-        addRecipeError(res.error);
+        console.log("Fail to add data");
       }
     });
   }
-})(MyForm));
+})(withStyles(styles)(MyForm));
 
 export default connect(
   mapStateTorops,
