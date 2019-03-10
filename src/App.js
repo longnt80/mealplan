@@ -9,7 +9,6 @@ import globalStyles from './common/globalStyles';
 import Navbar from './components/Navbar';
 import NextMeal from './components/NextMeal';
 import AllRecipes from './components/AllRecipes';
-import AddRecipe from './components/AddRecipe';
 import ViewRecipe from './components/ViewRecipe';
 import AddOrEditRecipeWrapper from './components/containers/AddOrEditRecipeWrapper';
 import Plan from './components/Plan';

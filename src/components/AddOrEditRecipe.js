@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withFormik } from 'formik';
+import * as Yup from 'yup';
 import { withStyles } from '@material-ui/core/styles';
 
 import { Link } from 'react-router-dom';
@@ -11,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const styles = theme => ({
   paper: {
@@ -26,6 +28,11 @@ const styles = theme => ({
     margin: `20px 0 ${theme.spacing.unit}px`,
   }
 });
+
+const schema = Yup.object().shape({
+  recipeName: Yup.string().required('This is a required field'),
+});
+
 class MyForm extends Component {
 
   renderIngredientFields = () => {
@@ -78,6 +85,8 @@ class MyForm extends Component {
       values,
       isSubmitting,
       addIngredientField,
+      errors,
+      touched,
     } = this.props;
 
     return (
@@ -87,10 +96,19 @@ class MyForm extends Component {
           <TextField
             label="Name"
             name="recipeName"
+            error={!!errors.recipeName}
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.recipeName}
             />
+          {errors.recipeName && touched.recipeName ? (
+            <FormHelperText
+              id="component-error-text"
+              error={!!errors.recipeName}
+            >
+              {errors.recipeName}
+            </FormHelperText>) : null
+          }
         </Paper>
         <Paper className={classes.paper}>
           <Typography variant="h5" component="h2">Ingredients:</Typography>
@@ -147,6 +165,7 @@ const AddOrEditRecipe = withFormik({
     };
   },
   enableReinitialize: true,
+  validationSchema: schema,
   handleSubmit: (values, formikBag) => {
     const { props } = formikBag;
 
