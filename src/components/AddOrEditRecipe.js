@@ -149,9 +149,8 @@ const AddOrEditRecipe = withFormik({
   enableReinitialize: true,
   handleSubmit: (values, formikBag) => {
     const { props } = formikBag;
-    const updatedRecipe = {...values};
 
-    props.updateRecipe(updatedRecipe);
+    props.handleFormSubmit(values, props.status);
   }
 })(withStyles(styles)(MyForm));
 

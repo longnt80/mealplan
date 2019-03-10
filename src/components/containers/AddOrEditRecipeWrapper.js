@@ -24,10 +24,13 @@ const generateNewRecipe = () => {
 class AddOrEditRecipeWrapper extends Component {
   constructor(props) {
     super(props)
-    const recipe = (this.props.location.state.recipe) || generateNewRecipe();
-    console.log(this.props);
+    const { state } = this.props.location;
+    const recipeIsExisted = state && state.recipe;
+    const recipe = recipeIsExisted || generateNewRecipe();
+    const status = recipeIsExisted ? "edit" : "add";
     this.state = {
-      ...recipe
+      status,
+      recipe: {...recipe}
     }
   }
 
@@ -42,11 +45,13 @@ class AddOrEditRecipeWrapper extends Component {
     };
 
     this.setState({
-      ...currentValues,
-      ingredients: [
-        ...currentValues.ingredients,
-        emptyIngredientFields,
-      ]
+      recipe: {
+        ...currentValues,
+        ingredients: [
+          ...currentValues.ingredients,
+          emptyIngredientFields,
+        ]
+      }
     });
   }
 
@@ -56,33 +61,54 @@ class AddOrEditRecipeWrapper extends Component {
     const newIngredientList = currentValues.ingredients.filter(ingredient => ingredient.id !== id);
 
     this.setState({
-      ...currentValues,
-      ingredients: [
-        ...newIngredientList
-      ]
+      recipe: {
+        ...currentValues,
+        ingredients: [
+          ...newIngredientList
+        ]
+      }
     });
   }
 
-  updateRecipe = updatedRecipe => {
+  addRecipe = recipe => {
+    const db = firebase.firestore();
+    db.collection('recipes').add({
+      ...recipe
+    })
+    .then(() => console.log("Added recipe"));
+  }
+
+  updateRecipe = recipe => {
     const db = firebase.firestore();
     const { id } = this.props.match.params;
-    // const noIdObject = {...updatedRecipe}
-    // delete noIdObject.id;
 
-    db.collection('recipes').doc(id).set(updatedRecipe)
+    db.collection('recipes').doc(id).set(recipe)
       .then(result => {
 
-        const newState = cloneDeep(updatedRecipe);
-        this.setState({...newState});
+        const newRecipe = cloneDeep(recipe);
+        this.setState({
+          recipe: {
+            ...newRecipe
+          }
+        });
       })
+  }
+
+  handleFormSubmit = (recipe, status) => {
+    if(status === 'add') {
+      this.addRecipe(recipe);
+    } else if (status === 'edit') {
+      this.updateRecipe(recipe);
+    }
   }
 
   render() {
     return (
       <AddOrEditRecipe
-        initialFields={this.state}
+        status={this.state.status}
+        initialFields={this.state.recipe}
         addIngredientField={this.addIngredientField}
-        updateRecipe={this.updateRecipe}
+        handleFormSubmit={this.handleFormSubmit}
         deleteIngredientField={this.deleteIngredientField}
       />
     );

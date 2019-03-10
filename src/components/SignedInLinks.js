@@ -30,7 +30,7 @@ const SignedInLinks = ({ classes }) => {
       <Link
         component={ RouterLink }
         className={classes.item}
-        to="recipes"
+        to="/recipes"
         color="inherit"
         underline="none">
       Recipes
@@ -38,7 +38,7 @@ const SignedInLinks = ({ classes }) => {
       <Link
         component={ RouterLink }
         className={classes.item}
-        to="plan"
+        to="/plan"
         color="inherit"
         underline="none">
       Plan
@@ -46,7 +46,7 @@ const SignedInLinks = ({ classes }) => {
       <Link
         component={ RouterLink }
         className={classes.item}
-        to="shopping"
+        to="/shopping"
         color="inherit"
         underline="none">
       Shopping
