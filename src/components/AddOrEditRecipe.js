@@ -40,6 +40,8 @@ class MyForm extends Component {
       handleBlur,
       handleChange,
       values,
+      errors,
+      touched,
       deleteIngredientField
     } = this.props;
 
@@ -61,6 +63,11 @@ class MyForm extends Component {
               value={values.ingredients[idx].name}
               fullWidth
               />
+              {errors.ingredients && touched.ingredients ? (
+                <FormHelperText error={!!errors.ingredients}>
+                  {errors.ingredients}
+                </FormHelperText>) : null
+              }
           </Grid>
           <Grid item xs={12} sm={2}>
             <Grid container justify="center">
@@ -165,6 +172,16 @@ const AddOrEditRecipe = withFormik({
     };
   },
   enableReinitialize: true,
+  validate: (values, props) => {
+    let errors = {};
+    const hasOneIngredient = values.ingredients.some(ingredient => ingredient.name !== "");
+
+    if (!hasOneIngredient) {
+      errors.ingredients = "At least one ingredient is required";
+    }
+
+    return errors;
+  },
   validationSchema: schema,
   handleSubmit: (values, formikBag) => {
     const { props } = formikBag;

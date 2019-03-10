@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import firebase from '../../config/fbConfig';
-import { cloneDeep } from 'lodash';
 
 import AddOrEditRecipe from '../AddOrEditRecipe';
 
@@ -21,13 +20,18 @@ const generateNewRecipe = () => {
   };
 }
 
+const STATUS = {
+  ADD: 'add',
+  EDIT: 'edit'
+}
+
 class AddOrEditRecipeWrapper extends Component {
   constructor(props) {
     super(props)
     const { state } = this.props.location;
     const recipeIsExisted = state && state.recipe;
     const recipe = recipeIsExisted || generateNewRecipe();
-    const status = recipeIsExisted ? "edit" : "add";
+    const status = recipeIsExisted ? STATUS.EDIT : STATUS.ADD;
     this.state = {
       status,
       recipe: {...recipe}
@@ -72,34 +76,31 @@ class AddOrEditRecipeWrapper extends Component {
 
   addRecipe = recipe => {
     const db = firebase.firestore();
-    db.collection('recipes').add({
+
+    return db.collection('recipes').add({
       ...recipe
-    })
-    .then(() => console.log("Added recipe"));
+    });
   }
 
   updateRecipe = recipe => {
     const db = firebase.firestore();
     const { id } = this.props.match.params;
 
-    db.collection('recipes').doc(id).set(recipe)
-      .then(result => {
-
-        const newRecipe = cloneDeep(recipe);
-        this.setState({
-          recipe: {
-            ...newRecipe
-          }
-        });
-      })
+    return db.collection('recipes').doc(id).set(recipe);
   }
 
   handleFormSubmit = (recipe, status) => {
-    if(status === 'add') {
-      this.addRecipe(recipe);
-    } else if (status === 'edit') {
-      this.updateRecipe(recipe);
+    const { history } = this.props;
+
+    if(status === STATUS.ADD) {
+      this.addRecipe(recipe)
+      .then(() => console.log("Added recipe"));
+    } else if (status === STATUS.EDIT) {
+      this.updateRecipe(recipe)
+      .then(() => console.log("Updated recipe"));
     }
+
+    history.goBack();
   }
 
   render() {
