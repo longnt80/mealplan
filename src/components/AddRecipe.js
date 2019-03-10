@@ -127,7 +127,8 @@ class MyForm extends Component {
       handleSubmit,
       handleChange,
       handleBlur,
-      values
+      values,
+      isSubmitting
     } = this.props;
 
     return (
@@ -173,6 +174,7 @@ class MyForm extends Component {
           <Button
             type="Submit"
             className={classes.button}
+            disabled={isSubmitting}
             color="primary"
             variant="contained"
             >Save</Button>
@@ -218,8 +220,10 @@ const EnhancedForm = withFormik({
         console.log("Success!!!");
         resetRecipeFields();
         history.push('/recipes');
+        formikBag.setSubmitting(false);
       } else {
         console.log("Fail to add data");
+        formikBag.setSubmitting(false);
       }
     });
   }

@@ -11,7 +11,7 @@ import NextMeal from './components/NextMeal';
 import AllRecipes from './components/AllRecipes';
 import AddRecipe from './components/AddRecipe';
 import ViewRecipe from './components/ViewRecipe';
-import EditRecipe from './components/EditRecipe';
+import AddOrEditRecipeWrapper from './components/containers/AddOrEditRecipeWrapper';
 import Plan from './components/Plan';
 import Shopping from './components/Shopping';
 import Layout from './components/Layout';
@@ -32,7 +32,7 @@ class App extends Component {
                   <Route path="/recipes" component={AllRecipes} />
                   <Route path="/add-recipe" component={AddRecipe} />
                   <Route path="/recipe/view/:id" render={props => <ViewRecipe {...props} />} />
-                  <Route path="/recipe/edit/:id" render={props => <EditRecipe {...props} />} />
+                  <Route path="/recipe/edit/:id" render={props => <AddOrEditRecipeWrapper {...props} />} />
                   <Route path="/plan" component={Plan} />
                   <Route path="/shopping" component={Shopping} />
                   <Route component={NoMatch} />

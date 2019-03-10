@@ -29,7 +29,12 @@ const styles = theme => ({
 class MyForm extends Component {
 
   renderIngredientFields = () => {
-    const { handleBlur, handleChange, values } = this.props;
+    const {
+      handleBlur,
+      handleChange,
+      values,
+      deleteIngredientField
+    } = this.props;
 
     return values.ingredients.map((ingredient, idx) => {
 
@@ -44,7 +49,7 @@ class MyForm extends Component {
             <TextField
               label="Ingredient"
               name={`ingredients[${idx}].name`}
-              // onChange={this.ingredientOnChange(handleChange, idx)}
+              onChange={handleChange}
               onBlur={handleBlur}
               value={values.ingredients[idx].name}
               fullWidth
@@ -53,7 +58,7 @@ class MyForm extends Component {
           <Grid item xs={12} sm={2}>
             <Grid container justify="center">
               <IconButton
-                // onClick={() => this.deleteIngredient(ingredient.id)}
+                onClick={() => deleteIngredientField(ingredient.id, values)}
               >
                 <DeleteIcon />
               </IconButton>
@@ -70,7 +75,9 @@ class MyForm extends Component {
       handleSubmit,
       handleChange,
       handleBlur,
-      values
+      values,
+      isSubmitting,
+      addIngredientField,
     } = this.props;
 
     return (
@@ -90,7 +97,7 @@ class MyForm extends Component {
           { this.renderIngredientFields() }
           <div className={classes.buttonContainer}>
             <Button
-              // onClick={this.addIngredient}
+              onClick={addIngredientField(values)}
               size="small"
               variant="contained"
             >
@@ -115,6 +122,7 @@ class MyForm extends Component {
         <div>
           <Button
             type="Submit"
+            disabled={isSubmitting}
             className={classes.button}
             color="primary"
             variant="contained"
@@ -132,7 +140,7 @@ class MyForm extends Component {
   }
 }
 
-const EnhancedForm = withFormik({
+const AddOrEditRecipe = withFormik({
   mapPropsToValues: props => {
     return {
       ...props.initialFields,
@@ -140,21 +148,11 @@ const EnhancedForm = withFormik({
   },
   enableReinitialize: true,
   handleSubmit: (values, formikBag) => {
-    console.log("Submitted!")
+    const { props } = formikBag;
+    const updatedRecipe = {...values};
+
+    props.updateRecipe(updatedRecipe);
   }
 })(withStyles(styles)(MyForm));
 
-const withInitialValues = (Component) => class extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      ...this.props.location.state
-    }
-  }
-
-  render() {
-    return <Component initialFields={this.state} />;
-  }
-}
-
-export default withInitialValues(EnhancedForm);
+export default AddOrEditRecipe;

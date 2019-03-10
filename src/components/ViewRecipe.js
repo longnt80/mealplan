@@ -7,13 +7,35 @@ class ViewRecipe extends Component {
     const { history } = this.props;
     const { recipe } = this.props.location.state;
 
-    history.push(`/recipe/edit/${recipe.id}`, recipe);
+    // Remove the id for consistency between
+    // existing recipe and a new recipe
+    // id wil be stored in params
+    const noID = {...recipe};
+    delete noID.id;
+
+    history.push(`/recipe/edit/${recipe.id}`, { recipe: {...noID} });
+  }
+
+  ingredients = ingredientArray => {
+    return ingredientArray.map(ingredient => {
+      return (
+        <li key={ingredient.id}>{ingredient.name}</li>
+      );
+    });
   }
 
   render() {
+    const { recipe } = this.props.location.state;
+
     return (
       <div>
-        View recipe with id: {this.props.location.state.recipe.id}
+        View recipe with id: {recipe.id}
+
+        <p>Name: {recipe.recipeName}</p>
+        <ul>
+          {this.ingredients(recipe.ingredients)}
+        </ul>
+
         <Button
             // type="Submit"
             // className={classes.button}

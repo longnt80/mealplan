@@ -8,7 +8,6 @@ export const getAllRecipes = () => {
     return firestore.collection('recipes').get()
       .then(docs => {
         const actualData = docs.docs.map(doc => {
-          console.log(doc);
           const rest = doc.data();
           const id = doc.id;
 

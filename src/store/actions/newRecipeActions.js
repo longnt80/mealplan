@@ -63,7 +63,7 @@ export const deleteIngredientField = updatedIngredients => ({
 
 export const updateIngredientFields = (idx, value) => {
   return (dispatch, getState) => {
-    const ingredientList = getState().recipeReducer.ingredients;
+    const ingredientList = getState().newRecipeReducer.ingredients;
 
     const newList = [...ingredientList];
 
