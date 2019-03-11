@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { withFormik } from 'formik';
 import * as Yup from 'yup';
 import { withStyles } from '@material-ui/core/styles';
@@ -34,6 +35,22 @@ const schema = Yup.object().shape({
 });
 
 class MyForm extends Component {
+  static propTypes = {
+    status: PropTypes.string.isRequired,
+    handleFormSubmit: PropTypes.func.isRequired,
+    deleteIngredientField: PropTypes.func.isRequired,
+    addIngredientField: PropTypes.func.isRequired,
+    initialFields: PropTypes.shape({
+      recipeName: PropTypes.string,
+      direction: PropTypes.string,
+      ingredients: PropTypes.arrayOf(PropTypes.shape({
+        amount: PropTypes.number,
+        id: PropTypes.string,
+        name: PropTypes.string,
+        unit: PropTypes.string
+      }))
+    }).isRequired,
+  }
 
   renderIngredientFields = () => {
     const {

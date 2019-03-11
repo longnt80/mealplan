@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import firebase from '../../config/fbConfig';
 
 import AddOrEditRecipe from '../AddOrEditRecipe';
@@ -26,6 +27,15 @@ const STATUS = {
 }
 
 class AddOrEditRecipeWrapper extends Component {
+  static propTypes = {
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        recipe: PropTypes.object,
+      })
+    }),
+
+  }
+
   constructor(props) {
     super(props)
     const { state } = this.props.location;
