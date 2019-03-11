@@ -73,6 +73,7 @@ class MyForm extends Component {
             <Grid container justify="center">
               <IconButton
                 onClick={() => deleteIngredientField(ingredient.id, values)}
+                tabIndex="-1"
               >
                 <DeleteIcon />
               </IconButton>

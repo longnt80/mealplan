@@ -30,7 +30,7 @@ class AddOrEditRecipeWrapper extends Component {
     super(props)
     const { state } = this.props.location;
     const recipeIsExisted = state && state.recipe;
-    const recipe = recipeIsExisted || generateNewRecipe();
+    const recipe = recipeIsExisted ? state.recipe : generateNewRecipe();
     const status = recipeIsExisted ? STATUS.EDIT : STATUS.ADD;
     this.state = {
       status,
@@ -91,16 +91,26 @@ class AddOrEditRecipeWrapper extends Component {
 
   handleFormSubmit = (recipe, status) => {
     const { history } = this.props;
+    const { id } = this.props.match.params;
+
+    // Remove empty ingredient fields
+    const filteredIngredientsList = recipe.ingredients.filter(ingredient => ingredient.name !== "");
+    const validRecipe = {
+      ...recipe,
+      ingredients: [
+        ...filteredIngredientsList
+      ]
+    }
 
     if(status === STATUS.ADD) {
-      this.addRecipe(recipe)
+      this.addRecipe(validRecipe)
       .then(() => console.log("Added recipe"));
     } else if (status === STATUS.EDIT) {
-      this.updateRecipe(recipe)
+      this.updateRecipe(validRecipe)
       .then(() => console.log("Updated recipe"));
     }
 
-    history.goBack();
+    history.push(`/recipe/view/${id}`, { recipe: { ...validRecipe } });
   }
 
   render() {
@@ -109,8 +119,8 @@ class AddOrEditRecipeWrapper extends Component {
         status={this.state.status}
         initialFields={this.state.recipe}
         addIngredientField={this.addIngredientField}
-        handleFormSubmit={this.handleFormSubmit}
         deleteIngredientField={this.deleteIngredientField}
+        handleFormSubmit={this.handleFormSubmit}
       />
     );
   }
