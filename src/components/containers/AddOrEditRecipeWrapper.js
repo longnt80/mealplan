@@ -30,7 +30,16 @@ class AddOrEditRecipeWrapper extends Component {
   static propTypes = {
     location: PropTypes.shape({
       state: PropTypes.shape({
-        recipe: PropTypes.object,
+        recipe: PropTypes.shape({
+          recipeName: PropTypes.string,
+          direction: PropTypes.string,
+          ingredients: PropTypes.arrayOf(PropTypes.shape({
+            amount: PropTypes.number,
+            id: PropTypes.string,
+            name: PropTypes.string,
+            unit: PropTypes.string
+          }))
+        })
       })
     }),
 
@@ -124,6 +133,7 @@ class AddOrEditRecipeWrapper extends Component {
   }
 
   render() {
+    console.log(this.state.status);
     return (
       <AddOrEditRecipe
         status={this.state.status}

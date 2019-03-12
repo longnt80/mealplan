@@ -102,6 +102,7 @@ class MyForm extends Component {
   };
 
   render() {
+    // console.log(this.props.status);
     const {
       classes,
       handleSubmit,
@@ -185,6 +186,7 @@ class MyForm extends Component {
 
 const AddOrEditRecipe = withFormik({
   mapPropsToValues: props => {
+    console.log(props);
     return {
       ...props.initialFields,
     };
