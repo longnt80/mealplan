@@ -1,0 +1,369 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<form
+  onSubmit={[Function]}
+>
+  <div
+    className="MuiPaper-root-4 MuiPaper-elevation2-8 MuiPaper-rounded-5 MyForm-paper-1"
+  >
+    <h2
+      className="MuiTypography-root-31 MuiTypography-h5-47"
+    >
+      Recipe's name:
+    </h2>
+    <div
+      className="MuiFormControl-root-67"
+    >
+      <label
+        className="MuiFormLabel-root-82 MuiFormLabel-filled-86 MuiInputLabel-root-71 MuiInputLabel-formControl-76 MuiInputLabel-animated-79 MuiInputLabel-shrink-78"
+        data-shrink={true}
+      >
+        Name
+      </label>
+      <div
+        className="MuiInputBase-root-102 MuiInput-root-89 MuiInput-underline-93 MuiInputBase-formControl-103 MuiInput-formControl-90"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          className="MuiInputBase-input-112 MuiInput-input-97"
+          disabled={false}
+          name="recipeName"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="text"
+          value="A hamburger"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    className="MuiPaper-root-4 MuiPaper-elevation2-8 MuiPaper-rounded-5 MyForm-paper-1"
+  >
+    <h2
+      className="MuiTypography-root-31 MuiTypography-h5-47"
+    >
+      Ingredients:
+    </h2>
+    <div
+      className="MuiGrid-container-119 MuiGrid-spacing-xs-24-143 MuiGrid-justify-xs-space-between-138"
+    >
+      <div
+        className="MuiGrid-item-120 MuiGrid-grid-xs-12-159 MuiGrid-grid-sm-6-167"
+      >
+        <div
+          className="MuiFormControl-root-67 MuiFormControl-fullWidth-70"
+        >
+          <label
+            className="MuiFormLabel-root-82 MuiFormLabel-filled-86 MuiInputLabel-root-71 MuiInputLabel-formControl-76 MuiInputLabel-animated-79 MuiInputLabel-shrink-78"
+            data-shrink={true}
+          >
+            Ingredient
+          </label>
+          <div
+            className="MuiInputBase-root-102 MuiInput-root-89 MuiInput-underline-93 MuiInputBase-fullWidth-111 MuiInput-fullWidth-96 MuiInputBase-formControl-103 MuiInput-formControl-90"
+            onClick={[Function]}
+          >
+            <input
+              aria-invalid={false}
+              className="MuiInputBase-input-112 MuiInput-input-97"
+              disabled={false}
+              name="ingredients[0].name"
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              required={false}
+              type="text"
+              value="Long"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className="MuiGrid-item-120 MuiGrid-grid-xs-12-159 MuiGrid-grid-sm-2-163"
+      >
+        <div
+          className="MuiGrid-container-119 MuiGrid-justify-xs-center-136"
+        >
+          <button
+            className="MuiButtonBase-root-222 MuiIconButton-root-216"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onContextMenu={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            tabIndex="-1"
+            type="button"
+          >
+            <span
+              className="MuiIconButton-label-221"
+            >
+              <svg
+                aria-hidden="true"
+                className="MuiSvgIcon-root-225"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                />
+                <path
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+              </svg>
+            </span>
+            <span
+              className="MuiTouchRipple-root-275"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      className="MuiGrid-container-119 MuiGrid-spacing-xs-24-143 MuiGrid-justify-xs-space-between-138"
+    >
+      <div
+        className="MuiGrid-item-120 MuiGrid-grid-xs-12-159 MuiGrid-grid-sm-6-167"
+      >
+        <div
+          className="MuiFormControl-root-67 MuiFormControl-fullWidth-70"
+        >
+          <label
+            className="MuiFormLabel-root-82 MuiFormLabel-filled-86 MuiInputLabel-root-71 MuiInputLabel-formControl-76 MuiInputLabel-animated-79 MuiInputLabel-shrink-78"
+            data-shrink={true}
+          >
+            Ingredient
+          </label>
+          <div
+            className="MuiInputBase-root-102 MuiInput-root-89 MuiInput-underline-93 MuiInputBase-fullWidth-111 MuiInput-fullWidth-96 MuiInputBase-formControl-103 MuiInput-formControl-90"
+            onClick={[Function]}
+          >
+            <input
+              aria-invalid={false}
+              className="MuiInputBase-input-112 MuiInput-input-97"
+              disabled={false}
+              name="ingredients[1].name"
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              required={false}
+              type="text"
+              value="Phuong"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className="MuiGrid-item-120 MuiGrid-grid-xs-12-159 MuiGrid-grid-sm-2-163"
+      >
+        <div
+          className="MuiGrid-container-119 MuiGrid-justify-xs-center-136"
+        >
+          <button
+            className="MuiButtonBase-root-222 MuiIconButton-root-216"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onContextMenu={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            tabIndex="-1"
+            type="button"
+          >
+            <span
+              className="MuiIconButton-label-221"
+            >
+              <svg
+                aria-hidden="true"
+                className="MuiSvgIcon-root-225"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                />
+                <path
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+              </svg>
+            </span>
+            <span
+              className="MuiTouchRipple-root-275"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      className="MyForm-buttonContainer-3"
+    >
+      <button
+        className="MuiButtonBase-root-222 MuiButton-root-234 MuiButton-contained-245 MuiButton-raised-248 MuiButton-sizeSmall-257"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onContextMenu={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex="0"
+        type="button"
+      >
+        <span
+          className="MuiButton-label-235"
+        >
+          More ingredient
+        </span>
+        <span
+          className="MuiTouchRipple-root-275"
+        />
+      </button>
+    </div>
+  </div>
+  <div
+    className="MuiPaper-root-4 MuiPaper-elevation2-8 MuiPaper-rounded-5 MyForm-paper-1"
+  >
+    <h2
+      className="MuiTypography-root-31 MuiTypography-h5-47"
+    >
+      Direction:
+    </h2>
+    <div
+      className="MuiFormControl-root-67 MuiFormControl-fullWidth-70"
+    >
+      <label
+        className="MuiFormLabel-root-82 MuiFormLabel-filled-86 MuiInputLabel-root-71 MuiInputLabel-formControl-76 MuiInputLabel-animated-79 MuiInputLabel-shrink-78 MuiInputLabel-outlined-81"
+        data-shrink={true}
+      >
+        Direction
+      </label>
+      <div
+        className="MuiInputBase-root-102 MuiOutlinedInput-root-260 MuiInputBase-fullWidth-111 MuiInputBase-formControl-103 MuiInputBase-multiline-110 MuiOutlinedInput-multiline-266"
+        onClick={[Function]}
+      >
+        <fieldset
+          aria-hidden={true}
+          className="MuiPrivateNotchedOutline-root-273 MuiOutlinedInput-notchedOutline-267"
+          style={
+            Object {
+              "paddingLeft": 8,
+            }
+          }
+        >
+          <legend
+            className="MuiPrivateNotchedOutline-legend-274"
+            style={
+              Object {
+                "width": 0,
+              }
+            }
+          >
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "&#8203;",
+                }
+              }
+            />
+          </legend>
+        </fieldset>
+        <textarea
+          aria-invalid={false}
+          className="MuiInputBase-input-112 MuiOutlinedInput-input-268 MuiInputBase-inputMultiline-114 MuiOutlinedInput-inputMultiline-270"
+          disabled={false}
+          name="direction"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          rows="10"
+          value="You need to make something"
+        />
+      </div>
+    </div>
+  </div>
+  <div>
+    <button
+      className="MuiButtonBase-root-222 MuiButton-root-234 MuiButton-contained-245 MuiButton-containedPrimary-246 MuiButton-raised-248 MuiButton-raisedPrimary-249 MyForm-button-2"
+      disabled={false}
+      onBlur={[Function]}
+      onContextMenu={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex="0"
+      type="Submit"
+    >
+      <span
+        className="MuiButton-label-235"
+      >
+        Save
+      </span>
+      <span
+        className="MuiTouchRipple-root-275"
+      />
+    </button>
+    <a
+      className="MuiButtonBase-root-222 MuiButton-root-234 MuiButton-contained-245 MuiButton-containedSecondary-247 MuiButton-raised-248 MuiButton-raisedSecondary-250 MyForm-button-2"
+      href="/recipes"
+      onBlur={[Function]}
+      onClick={[Function]}
+      onContextMenu={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      role="button"
+      tabIndex="0"
+    >
+      <span
+        className="MuiButton-label-235"
+      >
+        Cancel
+      </span>
+      <span
+        className="MuiTouchRipple-root-275"
+      />
+    </a>
+  </div>
+</form>
+`;

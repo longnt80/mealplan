@@ -36,7 +36,7 @@ const schema = Yup.object().shape({
 
 class MyForm extends Component {
   static propTypes = {
-    status: PropTypes.string.isRequired,
+    currentStatus: PropTypes.string.isRequired,
     handleFormSubmit: PropTypes.func.isRequired,
     deleteIngredientField: PropTypes.func.isRequired,
     addIngredientField: PropTypes.func.isRequired,
@@ -102,7 +102,6 @@ class MyForm extends Component {
   };
 
   render() {
-    // console.log(this.props.status);
     const {
       classes,
       handleSubmit,
@@ -206,7 +205,7 @@ const AddOrEditRecipe = withFormik({
   handleSubmit: (values, formikBag) => {
     const { props } = formikBag;
 
-    props.handleFormSubmit(values, props.status);
+    props.handleFormSubmit(values, props.currentStatus);
   }
 })(withStyles(styles)(MyForm));
 

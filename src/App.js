@@ -32,7 +32,6 @@ class App extends Component {
                   <Route path="/add-recipe" component={AddOrEditRecipeWrapper} />
                   <Route path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
                   <Route path="/recipe/view/:id" component={ViewRecipe} />} />
-                  {/* <Route path="/recipe/edit/:id" render={props => <AddOrEditRecipeWrapper {...props} />} /> */}
                   <Route path="/plan" component={Plan} />
                   <Route path="/shopping" component={Shopping} />
                   <Route component={NoMatch} />

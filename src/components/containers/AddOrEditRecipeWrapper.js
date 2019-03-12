@@ -136,7 +136,7 @@ class AddOrEditRecipeWrapper extends Component {
     console.log(this.state.status);
     return (
       <AddOrEditRecipe
-        status={this.state.status}
+        currentStatus={this.state.status}
         initialFields={this.state.recipe}
         addIngredientField={this.addIngredientField}
         deleteIngredientField={this.deleteIngredientField}
