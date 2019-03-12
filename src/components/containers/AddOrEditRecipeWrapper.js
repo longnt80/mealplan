@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import firebase from '../../config/fbConfig';
 
+import { DB_RECIPES_COLLECTION } from '../../common/constants';
+
 import AddOrEditRecipe from '../AddOrEditRecipe';
+
+const db = firebase.firestore();
 
 const generateNewRecipe = () => {
   const time = Date.now();
@@ -21,7 +25,7 @@ const generateNewRecipe = () => {
   };
 }
 
-const STATUS = {
+export const STATUS = {
   ADD: 'add',
   EDIT: 'edit'
 }
@@ -94,18 +98,26 @@ class AddOrEditRecipeWrapper extends Component {
   }
 
   addRecipe = recipe => {
-    const db = firebase.firestore();
-
-    return db.collection('recipes').add({
+    return db.collection(DB_RECIPES_COLLECTION).add({
       ...recipe
     });
   }
 
   updateRecipe = recipe => {
-    const db = firebase.firestore();
     const { id } = this.props.match.params;
 
-    return db.collection('recipes').doc(id).set(recipe);
+    return db.collection(DB_RECIPES_COLLECTION).doc(id).set(recipe);
+  }
+
+  deleteRecipe = () => {
+    const { history } = this.props;
+    const { id } = this.props.match.params;
+
+    db.collection(DB_RECIPES_COLLECTION).doc(id).delete()
+      .then(() => {
+        console.log("Deleted");
+        history.push('/recipes')
+      });
   }
 
   handleFormSubmit = (recipe, status) => {
@@ -123,21 +135,21 @@ class AddOrEditRecipeWrapper extends Component {
 
     if(status === STATUS.ADD) {
       this.addRecipe(validRecipe)
-      .then(() => console.log("Added recipe"));
+        .then(() => console.log("Added recipe"));
     } else if (status === STATUS.EDIT) {
       this.updateRecipe(validRecipe)
-      .then(() => console.log("Updated recipe"));
+        .then(() => console.log("Updated recipe"));
     }
 
     history.push(`/recipe/view/${id}`, { recipe: { ...validRecipe } });
   }
 
   render() {
-    console.log(this.state.status);
     return (
       <AddOrEditRecipe
         currentStatus={this.state.status}
         initialFields={this.state.recipe}
+        deleteRecipe={this.state.status === STATUS.EDIT ? this.deleteRecipe : null}
         addIngredientField={this.addIngredientField}
         deleteIngredientField={this.deleteIngredientField}
         handleFormSubmit={this.handleFormSubmit}

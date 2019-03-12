@@ -15,6 +15,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
+import { STATUS } from './containers/AddOrEditRecipeWrapper';
+
 const styles = theme => ({
   paper: {
     padding: "20px",
@@ -27,7 +29,11 @@ const styles = theme => ({
   },
   buttonContainer: {
     margin: `20px 0 ${theme.spacing.unit}px`,
-  }
+  },
+  danger: {
+    backgroundColor: theme.palette.danger.main,
+    color: '#fff'
+  },
 });
 
 const schema = Yup.object().shape({
@@ -51,6 +57,18 @@ class MyForm extends Component {
       }))
     }).isRequired,
   }
+
+  // handleFocusOnIngredientField = e => {
+  //   console.log("Focus");
+  //   console.log(e.target);
+  // }
+
+  // handleBlurOnIngredientField = e => {
+  //   const { handleBlur } = this.props;
+  //   console.log("Blur");
+  //   console.log(e.target);
+  //   handleBlur(e);
+  // }
 
   renderIngredientFields = () => {
     const {
@@ -112,6 +130,8 @@ class MyForm extends Component {
       addIngredientField,
       errors,
       touched,
+      deleteRecipe,
+      currentStatus,
     } = this.props;
 
     return (
@@ -177,6 +197,14 @@ class MyForm extends Component {
             color="secondary"
             variant="contained"
           >Cancel</Button>
+          {currentStatus === STATUS.EDIT ? (
+            <Button
+              onClick={deleteRecipe}
+              className={[classes.button, classes.danger].join(" ")}
+              variant="contained"
+            >Delete</Button>
+          ) : null }
+
         </div>
       </form>
     );
@@ -185,7 +213,6 @@ class MyForm extends Component {
 
 const AddOrEditRecipe = withFormik({
   mapPropsToValues: props => {
-    console.log(props);
     return {
       ...props.initialFields,
     };

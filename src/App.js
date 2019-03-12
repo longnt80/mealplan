@@ -27,7 +27,6 @@ class App extends Component {
               <Layout>
                 <Switch>
                   <Route exact path="/" component={NextMeal} />
-                  {/* Route for Recipes */}
                   <Route path="/recipes" component={AllRecipes} />
                   <Route path="/add-recipe" component={AddOrEditRecipeWrapper} />
                   <Route path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
