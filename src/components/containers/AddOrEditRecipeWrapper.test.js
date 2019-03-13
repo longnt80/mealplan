@@ -15,13 +15,13 @@ test('renders correctly', () => {
                 recipeName: "A hamburger",
                 ingredients: [
                   {
-                    name: "Long",
+                    name: "Sone ingredient",
                     id: "adasdasdasdasdasdasd",
                     amount: 1,
                     unit: "ml"
                   },
                   {
-                    name: "Phuong",
+                    name: "Some ingredient 02",
                     id: "adasdasd12345678",
                     amount: 1,
                     unit: "kg"
