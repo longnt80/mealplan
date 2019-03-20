@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 
 import SignedInLinks from './SignedInLinks';
-import SignedOutLinks from './SignedOutLinks';
 
 const styles = {
   root: {
@@ -21,21 +20,18 @@ const styles = {
   },
 };
 
-const Navbar = props => {
-  const { classes } = props;
-
+const Navbar = ({ classes, auth }) => {
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-            <Link component={ RouterLink } to="/" color="inherit" underline="none">
+            <Link component={RouterLink} to="/" color="inherit" underline="none">
               MealPlan
             </Link>
           </Typography>
           <div>
-            <SignedInLinks />
-            <SignedOutLinks />
+            {auth.isAuthenticated && <SignedInLinks />}
           </div>
         </Toolbar>
       </AppBar>
@@ -44,7 +40,16 @@ const Navbar = props => {
 };
 
 Navbar.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  auth: PropTypes.shape({
+    isAuthenticated: PropTypes.bool,
+    isSubmitting: PropTypes.bool,
+    newUser: PropTypes.bool,
+    user: PropTypes.objectOf(PropTypes.string),
+    error: PropTypes.string,
+  }).isRequired,
 };
 
-export default withStyles(styles)(Navbar);
+export default connect(
+  state => ({ auth: state.auth })
+)(withStyles(styles)(Navbar));

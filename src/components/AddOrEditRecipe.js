@@ -58,18 +58,6 @@ class MyForm extends Component {
     }).isRequired,
   }
 
-  // handleFocusOnIngredientField = e => {
-  //   console.log("Focus");
-  //   console.log(e.target);
-  // }
-
-  // handleBlurOnIngredientField = e => {
-  //   const { handleBlur } = this.props;
-  //   console.log("Blur");
-  //   console.log(e.target);
-  //   handleBlur(e);
-  // }
-
   renderIngredientFields = () => {
     const {
       handleBlur,

@@ -1,4 +1,4 @@
-export const GET_ALL_RECIPES = 'GET_ALL_RECIPES';
+import { GET_ALL_RECIPES } from '../constants';
 
 export const getAllRecipes = () => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {

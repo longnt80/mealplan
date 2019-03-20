@@ -1,4 +1,4 @@
-import { GET_ALL_RECIPES } from '../actions/recipesActions';
+import { GET_ALL_RECIPES } from '../constants';
 
 const initialState = null;
 

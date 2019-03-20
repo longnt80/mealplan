@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import THEME from './common/theme';
 import globalStyles from './common/globalStyles';
 
+import SignIn from './components/SignIn';
 import Navbar from './components/Navbar';
 import NextMeal from './components/NextMeal';
 import AllRecipes from './components/AllRecipes';
@@ -15,32 +18,61 @@ import Plan from './components/Plan';
 import Shopping from './components/Shopping';
 import Layout from './components/Layout';
 import NoMatch from './components/NoMatch';
+import PrivateRoute from './components/PrivateRoute';
+
 
 class App extends Component {
+  static propTypes = {
+    auth: PropTypes.shape({
+      isAuthenticated: PropTypes.bool,
+      isSubmitting: PropTypes.bool,
+      newUser: PropTypes.bool,
+      user: PropTypes.objectOf(PropTypes.string),
+      error: PropTypes.string,
+    }).isRequired,
+  }
+
+  renderedRoute = () => {
+    const { auth } = this.props;
+
+    return (
+      <Switch>
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} exact path="/" component={NextMeal} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/recipes" component={AllRecipes} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/add-recipe" component={AddOrEditRecipeWrapper} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/recipe/view/:id" component={ViewRecipe} />
+} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/plan" component={Plan} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/shopping" component={Shopping} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/login" component={SignIn} />
+} />
+        <PrivateRoute isAuthenticated={auth.isAuthenticated} component={NoMatch} />
+      </Switch>
+    )
+  }
+
   render() {
     return (
       <MuiThemeProvider theme={THEME}>
         <CssBaseline />
         <BrowserRouter>
-            <div className="App">
-              <Navbar />
-              <Layout>
-                <Switch>
-                  <Route exact path="/" component={NextMeal} />
-                  <Route path="/recipes" component={AllRecipes} />
-                  <Route path="/add-recipe" component={AddOrEditRecipeWrapper} />
-                  <Route path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
-                  <Route path="/recipe/view/:id" component={ViewRecipe} />} />
-                  <Route path="/plan" component={Plan} />
-                  <Route path="/shopping" component={Shopping} />
-                  <Route component={NoMatch} />
-                </Switch>
-              </Layout>
-            </div>
+          <div className="App">
+            <Navbar />
+            <Layout>
+              {this.renderedRoute()}
+            </Layout>
+          </div>
         </BrowserRouter>
       </MuiThemeProvider>
     );
   }
 }
 
-export default withStyles(globalStyles)(App);
+const mapStateToProps = state => ({
+  auth: state.auth,
+})
+
+export default connect(
+  mapStateToProps,
+)(withStyles(globalStyles)(App));
