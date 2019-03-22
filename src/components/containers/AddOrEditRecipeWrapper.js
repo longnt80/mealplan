@@ -83,8 +83,6 @@ class AddOrEditRecipeWrapper extends Component {
   }
 
   deleteIngredientField = (id, currentValues) => {
-    console.log("delete ingr field: " + id);
-
     const newIngredientList = currentValues.ingredients.filter(ingredient => ingredient.id !== id);
 
     this.setState({
@@ -106,7 +104,7 @@ class AddOrEditRecipeWrapper extends Component {
   updateRecipe = recipe => {
     const { id } = this.props.match.params;
 
-    return db.collection(DB_RECIPES_COLLECTION).doc(id).set(recipe);
+    return db.collection(DB_RECIPES_COLLECTION).doc(id).set(recipe, { merge: true });
   }
 
   deleteRecipe = () => {
