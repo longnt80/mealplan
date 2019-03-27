@@ -1,8 +1,14 @@
 import {
-  SIGNIN_OR_SIGNUP,
-  SIGNIN_OR_SIGNUP_SUCCESS,
-  SIGNIN_OR_SIGNUP_FAILURE,
+  SIGNIN_REQUEST,
+  SIGNIN_SUCCESS,
+  SIGNIN_FAILURE,
+  SIGNUP_REQUEST,
+  SIGNUP_SUCCESS,
+  SIGNUP_FAILURE,
   RESET_AUTH_STATE,
+  SIGNOUT_REQUEST,
+  SIGN_OUT_SUCCESS,
+  SIGN_OUT_FAILURE,
 } from '../constants';
 
 const initialState = {
@@ -10,7 +16,6 @@ const initialState = {
   newUser: false,
   isAuthenticated: false,
   user: {
-    uid: null,
     userEmail: null,
   },
   error: null,
@@ -18,25 +23,57 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SIGNIN_OR_SIGNUP:
+    case SIGNIN_REQUEST:
       return {
         ...state,
         isSubmitting: true,
-        isNewUser: action.isNewUser,
       };
-    case SIGNIN_OR_SIGNUP_SUCCESS:
+    case SIGNIN_SUCCESS:
       return {
         ...state,
         isSubmitting: false,
         isAuthenticated: true,
         user: {...action.user}
       };
-    case SIGNIN_OR_SIGNUP_FAILURE:
+    case SIGNIN_FAILURE:
       return {
         ...state,
         isSubmitting: false,
         error: action.error,
       };
+    case SIGNUP_REQUEST:
+      return {
+        ...state,
+        isSubmitting: true,
+      };
+    case SIGNUP_SUCCESS:
+      return {
+        ...state,
+        isSubmitting: false,
+        isAuthenticated: true,
+        user: {...action.user}
+      };
+    case SIGNUP_FAILURE:
+      return {
+        ...state,
+        isSubmitting: false,
+        error: action.error,
+      };
+    case SIGNOUT_REQUEST:
+      return {
+        ...state,
+        isSubmitting: true,
+      };
+    case SIGN_OUT_SUCCESS:
+      return {
+        ...initialState,
+      };
+    case SIGN_OUT_FAILURE:
+      return {
+        ...state,
+        isSubmitting: false,
+        error: action.errMessage,
+      }
     case RESET_AUTH_STATE:
       return {...initialState}
     default:

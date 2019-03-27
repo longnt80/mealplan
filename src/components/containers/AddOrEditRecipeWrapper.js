@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { any } from 'prop-types';
 import firebase from '../../config/fbConfig';
 
 import { DB_RECIPES_COLLECTION } from '../../common/constants';
@@ -46,14 +46,25 @@ class AddOrEditRecipeWrapper extends Component {
         })
       })
     }),
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.string
+      })
+    }),
+    history: PropTypes.objectOf(any),
+  }
 
+  static defaultProps = {
+    location: {},
+    match: {},
+    history: {},
   }
 
   constructor(props) {
     super(props)
-    const { state } = this.props.location;
-    const recipeIsExisted = state && state.recipe;
-    const recipe = recipeIsExisted ? state.recipe : generateNewRecipe();
+    const { location } = this.props;
+    const recipeIsExisted = location.state && location.state.recipe;
+    const recipe = recipeIsExisted ? location.state.recipe : generateNewRecipe();
     const status = recipeIsExisted ? STATUS.EDIT : STATUS.ADD;
     this.state = {
       status,
@@ -61,7 +72,7 @@ class AddOrEditRecipeWrapper extends Component {
     }
   }
 
-  addIngredientField = currentValues => e => {
+  addIngredientField = currentValues => {
     const time = Date.now();
 
     const emptyIngredientFields = {
@@ -102,16 +113,16 @@ class AddOrEditRecipeWrapper extends Component {
   }
 
   updateRecipe = recipe => {
-    const { id } = this.props.match.params;
+    const { match } = this.props;
 
-    return db.collection(DB_RECIPES_COLLECTION).doc(id).set(recipe, { merge: true });
+    return db.collection(DB_RECIPES_COLLECTION).doc(match.params.id).set(recipe, { merge: true });
   }
 
   deleteRecipe = () => {
     const { history } = this.props;
-    const { id } = this.props.match.params;
+    const { match } = this.props;
 
-    db.collection(DB_RECIPES_COLLECTION).doc(id).delete()
+    db.collection(DB_RECIPES_COLLECTION).doc(match.params.id).delete()
       .then(() => {
         console.log("Deleted");
         history.push('/recipes')
@@ -120,7 +131,7 @@ class AddOrEditRecipeWrapper extends Component {
 
   handleFormSubmit = (recipe, status) => {
     const { history } = this.props;
-    const { id } = this.props.match.params;
+    const { match } = this.props;
 
     // Remove empty ingredient fields
     const filteredIngredientsList = recipe.ingredients.filter(ingredient => ingredient.name !== "");
@@ -139,15 +150,17 @@ class AddOrEditRecipeWrapper extends Component {
         .then(() => console.log("Updated recipe"));
     }
 
-    history.push(`/recipe/view/${id}`, { recipe: { ...validRecipe } });
+    history.push(`/recipe/view/${match.params.id}`, { recipe: { ...validRecipe } });
   }
 
   render() {
+    const { status, recipe } = this.state;
+
     return (
       <AddOrEditRecipe
-        currentStatus={this.state.status}
-        initialFields={this.state.recipe}
-        deleteRecipe={this.state.status === STATUS.EDIT ? this.deleteRecipe : null}
+        currentStatus={status}
+        initialFields={recipe}
+        deleteRecipe={status === STATUS.EDIT ? this.deleteRecipe : null}
         addIngredientField={this.addIngredientField}
         deleteIngredientField={this.deleteIngredientField}
         handleFormSubmit={this.handleFormSubmit}

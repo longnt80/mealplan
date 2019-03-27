@@ -43,7 +43,6 @@ const schema = Yup.object().shape({
 class MyForm extends Component {
   static propTypes = {
     currentStatus: PropTypes.string.isRequired,
-    handleFormSubmit: PropTypes.func.isRequired,
     deleteIngredientField: PropTypes.func.isRequired,
     addIngredientField: PropTypes.func.isRequired,
     initialFields: PropTypes.shape({
@@ -76,8 +75,9 @@ class MyForm extends Component {
           container
           spacing={24}
           justify="space-between"
+          className="ingredientField" // for testing purpose
         >
-          <Grid item  xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Ingredient"
               name={`ingredients[${idx}].name`}
@@ -85,11 +85,12 @@ class MyForm extends Component {
               onBlur={handleBlur}
               value={values.ingredients[idx].name}
               fullWidth
-              />
-              {errors.ingredients && touched.ingredients ? (
-                <FormHelperText error={!!errors.ingredients}>
-                  {errors.ingredients}
-                </FormHelperText>) : null
+            />
+            {errors.ingredients && touched.ingredients ? (
+              <FormHelperText error={!!errors.ingredients}>
+                {errors.ingredients}
+              </FormHelperText>
+) : null
               }
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -133,14 +134,15 @@ class MyForm extends Component {
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.recipeName}
-            />
+          />
           {errors.recipeName && touched.recipeName ? (
             <FormHelperText
               id="component-error-text"
               error={!!errors.recipeName}
             >
               {errors.recipeName}
-            </FormHelperText>) : null
+            </FormHelperText>
+            ) : null
           }
         </Paper>
         <Paper className={classes.paper}>
@@ -148,7 +150,7 @@ class MyForm extends Component {
           { this.renderIngredientFields() }
           <div className={classes.buttonContainer}>
             <Button
-              onClick={addIngredientField(values)}
+              onClick={() => addIngredientField(values)}
               size="small"
               variant="contained"
             >
@@ -168,7 +170,7 @@ class MyForm extends Component {
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.description}
-            />
+          />
         </Paper>
         <div>
           <Button
@@ -177,22 +179,27 @@ class MyForm extends Component {
             className={classes.button}
             color="primary"
             variant="contained"
-            >Save</Button>
+          >
+          Save
+          </Button>
           <Button
             component={Link}
             to="/recipes"
             className={classes.button}
             color="secondary"
             variant="contained"
-          >Cancel</Button>
+          >
+          Cancel
+          </Button>
           {currentStatus === STATUS.EDIT ? (
             <Button
               onClick={deleteRecipe}
               className={[classes.button, classes.danger].join(" ")}
               variant="contained"
-            >Delete</Button>
+            >
+            Delete
+            </Button>
           ) : null }
-
         </div>
       </form>
     );
@@ -206,8 +213,8 @@ const AddOrEditRecipe = withFormik({
     };
   },
   enableReinitialize: true,
-  validate: (values, props) => {
-    let errors = {};
+  validate: (values) => {
+    const errors = {};
     const hasOneIngredient = values.ingredients.some(ingredient => ingredient.name !== "");
 
     if (!hasOneIngredient) {

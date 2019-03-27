@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
-
 import Link from '@material-ui/core/Link';
+import { signOut } from '../store/actions/authActions';
 
 export const navbarLinkStyles = theme => ({
   item: {
@@ -16,47 +17,53 @@ export const navbarLinkStyles = theme => ({
   }
 })
 
-const SignedInLinks = ({ classes }) => {
+const SignedInLinks = ({ classes, signingOut }) => {
   return (
     <React.Fragment>
       <Link
-        component={ RouterLink }
+        component={RouterLink}
         className={classes.item}
         to="/"
         color="inherit"
-        underline="none">
+        underline="none"
+      >
       Home
       </Link>
       <Link
-        component={ RouterLink }
+        component={RouterLink}
         className={classes.item}
         to="/recipes"
         color="inherit"
-        underline="none">
+        underline="none"
+      >
       Recipes
       </Link>
       <Link
-        component={ RouterLink }
+        component={RouterLink}
         className={classes.item}
         to="/plan"
         color="inherit"
-        underline="none">
+        underline="none"
+      >
       Plan
       </Link>
       <Link
-        component={ RouterLink }
+        component={RouterLink}
         className={classes.item}
         to="/shopping"
         color="inherit"
-        underline="none">
+        underline="none"
+      >
       Shopping
       </Link>
       <Link
-        component={ RouterLink }
+        onClick={signingOut}
+        component={RouterLink}
         className={[classes.item, classes.highlight].join(' ')}
         to="/"
         color="secondary"
-        underline="none">
+        underline="none"
+      >
       Sign out
       </Link>
     </React.Fragment>
@@ -64,7 +71,15 @@ const SignedInLinks = ({ classes }) => {
 };
 
 SignedInLinks.propTypes = {
+  signingOut: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(navbarLinkStyles)(SignedInLinks);
+const mapDispatchToProps = dispatch => ({
+  signingOut: () => dispatch(signOut()),
+})
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withStyles(navbarLinkStyles)(SignedInLinks));

@@ -9,11 +9,15 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import {
-  signingInOrUp,
-  signInOrUpSuccess,
-  signInOrUpFailure,
+  signingIn,
+  signInSuccess,
+  signInFailure,
+  signingUp,
+  signUpSuccess,
+  signUpFailure,
   resetAuthState,
 } from '../store/actions/authActions';
+import { globalLoading } from '../store/actions/appActions';
 
 const styles = theme => (
   {
@@ -43,35 +47,57 @@ const styles = theme => (
   }
 )
 
-class TheForm extends Component {
+export class TheForm extends Component {
   state = {
-    isNewUser: false
+    isSignUp: false
   }
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    const { history, setSubmitting, values, signingInOrUp, signInOrUpSuccess, signInOrUpFailure } = this.props;
-    const { isNewUser } = this.state;
+    const { isSignUp } = this.state;
+    const {
+      history,
+      setSubmitting,
+      values,
+      signingIn,
+      signInSuccess,
+      signInFailure,
+      globalLoading,
+      signingUp,
+      signUpSuccess,
+      signUpFailure,
+    } = this.props;
+    // const { isSignUp } = this.state;
     const { email, password } = values;
 
     setSubmitting(true);
-    signingInOrUp(email, password, isNewUser)
-      .then(currentUser => {
-        const user = {
-          uid: currentUser.user.uid,
-          userEmail: currentUser.user.email,
-        }
+    globalLoading(true);
 
-        signInOrUpSuccess(user);
-        setSubmitting(false);
-        history.push('/');
-      })
-      .catch(error => {
-        const errorMessage = error.message;
-
-        signInOrUpFailure(errorMessage);
-        setSubmitting(false);
-      });
+    if (!isSignUp) {
+      signingIn(email, password)
+        .then(cred => {
+          signInSuccess({ userEmail: cred.user.email });
+          setSubmitting(false);
+          globalLoading(false);
+        })
+        .catch(err => {
+          signInFailure(err.message);
+          setSubmitting(false);
+          globalLoading(false);
+        })
+    } else {
+      signingUp(email, password)
+        .then((cred) => {
+          signUpSuccess({ userEmail: cred.user.email });
+          setSubmitting(false);
+          globalLoading(false);
+        })
+        .catch(err => {
+          signUpFailure(err.message);
+          setSubmitting(false);
+          globalLoading(false);
+        })
+    }
   }
 
   handleClick = e => {
@@ -81,7 +107,7 @@ class TheForm extends Component {
     resetAuthState();
     resetForm();
     this.setState((state) => ({
-      isNewUser: !state.isNewUser
+      isSignUp: !state.isSignUp
     }));
   }
 
@@ -94,13 +120,13 @@ class TheForm extends Component {
       isSubmitting,
       auth,
     } = this.props;
-    const { isNewUser } = this.state;
+    const { isSignUp } = this.state;
 
     return (
       <form className={classes.root} onSubmit={this.handleFormSubmit}>
         <Paper className={classes.paper}>
           <Typography component="h2" variant="h5">
-            {isNewUser ? "Sign Up" : "Sign In" }
+            {isSignUp ? "Sign Up" : "Sign In" }
           </Typography>
           <TextField
             className={classes.textField}
@@ -138,7 +164,7 @@ class TheForm extends Component {
               color="primary"
               disabled={isSubmitting}
             >
-              {isNewUser ? 'Sign up' : 'Sign in'}
+              {isSignUp ? 'Sign up' : 'Sign in'}
             </Button>
             <Link
               component="button"
@@ -146,7 +172,7 @@ class TheForm extends Component {
             >
               or
               {' '}
-              {isNewUser ? 'Sign up' : 'Sign in'}
+              {isSignUp ? 'Sign in' : 'Sign up'}
             </Link>
           </Paper>
         </Paper>
@@ -174,10 +200,14 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  signingInOrUp: (email, password, isNewUser) => dispatch(signingInOrUp(email, password, isNewUser)),
-  signInOrUpSuccess: user => dispatch(signInOrUpSuccess(user)),
-  signInOrUpFailure: error => dispatch(signInOrUpFailure(error)),
+  signingIn: (email, password) => dispatch(signingIn(email, password)),
+  signInSuccess: user => dispatch(signInSuccess(user)),
+  signInFailure: error => dispatch(signInFailure(error)),
+  signingUp: (email, password) => dispatch(signingUp(email, password)),
+  signUpSuccess: (user) => dispatch(signUpSuccess(user)),
+  signUpFailure: error => dispatch(signUpFailure(error)),
   resetAuthState: () => dispatch(resetAuthState()),
+  globalLoading: (boolean) => dispatch(globalLoading(boolean)),
 })
 
 export default connect(
