@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+import { func, any, objectOf, bool, string, shape } from 'prop-types';
 import { connect } from 'react-redux';
 import { withFormik } from 'formik';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,16 +9,8 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import {
-  signingIn,
-  signInSuccess,
-  signInFailure,
-  signingUp,
-  signUpSuccess,
-  signUpFailure,
-  resetAuthState,
-} from '../store/actions/authActions';
-import { globalLoading } from '../store/actions/appActions';
+import * as authActions from '../store/actions/authActions';
+import { globalLoading as globalLoadingAction } from '../store/actions/appActions';
 
 const styles = theme => (
   {
@@ -48,6 +41,51 @@ const styles = theme => (
 )
 
 export class TheForm extends Component {
+  static propTypes = {
+    signingIn: func,
+    signInSuccess: func,
+    signInFailure: func,
+    signingUp: func,
+    signUpSuccess: func,
+    signUpFailure: func,
+    globalLoading: func,
+    resetAuthState: func,
+    auth: shape({
+      isSubmitting: bool,
+      newUser: bool,
+      isAuthenticated: bool,
+      user: {
+        userEmail: string,
+      },
+      error: string,
+    }).isRequired,
+    classes: objectOf(any),
+    values: objectOf(string),
+    handleBlur: func,
+    handleChange: func,
+    setSubmitting: func,
+    resetForm: func,
+    isSubmitting: bool,
+  }
+
+  static defaultProps = {
+    signingIn: () => {},
+    signInSuccess: () => {},
+    signInFailure: () => {},
+    signingUp: () => {},
+    signUpSuccess: () => {},
+    signUpFailure: () => {},
+    globalLoading: () => {},
+    resetAuthState: () => {},
+    classes: {},
+    values: {},
+    handleBlur: () => {},
+    handleChange: () => {},
+    setSubmitting: () => {},
+    resetForm: () => {},
+    isSubmitting: false,
+  }
+
   state = {
     isSignUp: false
   }
@@ -56,7 +94,6 @@ export class TheForm extends Component {
     e.preventDefault();
     const { isSignUp } = this.state;
     const {
-      history,
       setSubmitting,
       values,
       signingIn,
@@ -67,7 +104,6 @@ export class TheForm extends Component {
       signUpSuccess,
       signUpFailure,
     } = this.props;
-    // const { isSignUp } = this.state;
     const { email, password } = values;
 
     setSubmitting(true);
@@ -183,32 +219,41 @@ export class TheForm extends Component {
 }
 
 const SignIn = withFormik({
-  mapPropsToValues: props => {
+  mapPropsToValues: () => {
     return {
       email: "",
       password: "",
     };
   },
   enableReinitialize: true,
-  // handleSubmit: (values, formikBag) => {
-  //   console.log("Hi there");
-  // }
 })(withStyles(styles)(TheForm));
 
 const mapStateToProps = state => ({
   auth: state.auth,
 });
 
-const mapDispatchToProps = dispatch => ({
-  signingIn: (email, password) => dispatch(signingIn(email, password)),
-  signInSuccess: user => dispatch(signInSuccess(user)),
-  signInFailure: error => dispatch(signInFailure(error)),
-  signingUp: (email, password) => dispatch(signingUp(email, password)),
-  signUpSuccess: (user) => dispatch(signUpSuccess(user)),
-  signUpFailure: error => dispatch(signUpFailure(error)),
-  resetAuthState: () => dispatch(resetAuthState()),
-  globalLoading: (boolean) => dispatch(globalLoading(boolean)),
-})
+const mapDispatchToProps = dispatch => {
+  const {
+    signingIn,
+    signInSuccess,
+    signInFailure,
+    signingUp,
+    signUpSuccess,
+    signUpFailure,
+    resetAuthState,
+  } = authActions;
+
+  return ({
+    signingIn: (email, password) => dispatch(signingIn(email, password)),
+    signInSuccess: user => dispatch(signInSuccess(user)),
+    signInFailure: error => dispatch(signInFailure(error)),
+    signingUp: (email, password) => dispatch(signingUp(email, password)),
+    signUpSuccess: (user) => dispatch(signUpSuccess(user)),
+    signUpFailure: error => dispatch(signUpFailure(error)),
+    resetAuthState: () => dispatch(resetAuthState()),
+    globalLoading: (boolean) => dispatch(globalLoadingAction(boolean)),
+  })
+}
 
 export default connect(
   mapStateToProps,
