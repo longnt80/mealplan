@@ -27,6 +27,9 @@
       {
         "devDependencies": true
       }
-    ]
+    ],
+    "globals": {
+      "localStorage": true,
+    },
   }
 }

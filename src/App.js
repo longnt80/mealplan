@@ -22,6 +22,8 @@ import Layout from './components/Layout';
 import NoMatch from './components/NoMatch';
 import PrivateRoute from './components/PrivateRoute';
 
+import firebase from './config/fbConfig';
+
 const styles = {
   ...globalStyles,
   '@keyframes spinning': {
@@ -51,34 +53,57 @@ class App extends Component {
     }).isRequired,
   }
 
-  renderedRoute = () => {
-    const { auth } = this.props;
+  state = {
+    authUser: JSON.parse(localStorage.getItem('authUser')),
+  }
 
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(authUser => {
+
+      if (authUser) {
+        const { email } = authUser;
+        localStorage.setItem('authUser', JSON.stringify({ email, }));
+        this.setState({
+          authUser: { email },
+        })
+      } else {
+        localStorage.removeItem('authUser');
+        this.setState({
+          authUser,
+        })
+      }
+    })
+  }
+
+  renderedRoute = (isAuthenticated) => {
     return (
       <Switch>
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} exact path="/" component={NextMeal} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/recipes" component={AllRecipes} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/add-recipe" component={AddOrEditRecipeWrapper} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/recipe/view/:id" component={ViewRecipe} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/plan" component={Plan} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/shopping" component={Shopping} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} path="/login" component={SignIn} />
-        <PrivateRoute isAuthenticated={auth.isAuthenticated} component={NoMatch} />
+        <PrivateRoute isAuthenticated={isAuthenticated} exact path="/" component={NextMeal} />
+        <PrivateRoute isAuthenticated={isAuthenticated} path="/recipes" component={AllRecipes} />
+        <PrivateRoute isAuthenticated={isAuthenticated} path="/add-recipe" component={AddOrEditRecipeWrapper} />
+        <PrivateRoute isAuthenticated={isAuthenticated} path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
+        <PrivateRoute isAuthenticated={isAuthenticated} path="/recipe/view/:id" component={ViewRecipe} />
+        <PrivateRoute isAuthenticated={isAuthenticated} path="/plan" component={Plan} />
+        <PrivateRoute isAuthenticated={isAuthenticated} path="/shopping" component={Shopping} />
+        <PrivateRoute isAuthenticated={isAuthenticated} path="/login" component={SignIn} />
+        <PrivateRoute isAuthenticated={isAuthenticated} component={NoMatch} />
       </Switch>
     )
   }
 
   render() {
     const { app, classes } = this.props;
+    const { authUser } = this.state;
+    const isAuthenticated = authUser !== null ? true : false;
+
     return (
       <MuiThemeProvider theme={THEME}>
         <CssBaseline />
         <BrowserRouter>
           <div className="App">
-            <Navbar />
+            <Navbar isAuthenticated={isAuthenticated} />
             <Layout>
-              {this.renderedRoute()}
+              {this.renderedRoute(isAuthenticated)}
             </Layout>
             <Modal disableAutoFocus open={app.loading}>
               <div className={classes.icon}>

@@ -24,11 +24,13 @@ export const signInSuccess = (user) => ({
 });
 
 export const signingIn = (email, password) => (dispatch, getState, { getFirebase })  => {
-  const auth = getFirebase().auth();
+  const firebase = getFirebase();
+  const auth = firebase.auth();
 
   dispatch({
     type: SIGNIN_REQUEST,
   });
+
   return auth.signInWithEmailAndPassword(email, password);
 }
 

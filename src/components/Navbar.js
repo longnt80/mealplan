@@ -20,7 +20,7 @@ const styles = {
   },
 };
 
-const Navbar = ({ classes, auth }) => {
+const Navbar = ({ classes, auth, isAuthenticated }) => {
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -31,7 +31,7 @@ const Navbar = ({ classes, auth }) => {
             </Link>
           </Typography>
           <div>
-            {auth.isAuthenticated && <SignedInLinks />}
+            {isAuthenticated && <SignedInLinks />}
           </div>
         </Toolbar>
       </AppBar>

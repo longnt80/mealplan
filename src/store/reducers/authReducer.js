@@ -12,12 +12,8 @@ import {
 } from '../constants';
 
 const initialState = {
-  isSubmitting: false,
   newUser: false,
-  isAuthenticated: false,
-  user: {
-    userEmail: null,
-  },
+  user: null,
   error: null,
 }
 
@@ -26,43 +22,34 @@ const authReducer = (state = initialState, action) => {
     case SIGNIN_REQUEST:
       return {
         ...state,
-        isSubmitting: true,
       };
     case SIGNIN_SUCCESS:
       return {
         ...state,
-        isSubmitting: false,
-        isAuthenticated: true,
         user: {...action.user}
       };
     case SIGNIN_FAILURE:
       return {
         ...state,
-        isSubmitting: false,
         error: action.error,
       };
     case SIGNUP_REQUEST:
       return {
         ...state,
-        isSubmitting: true,
       };
     case SIGNUP_SUCCESS:
       return {
         ...state,
-        isSubmitting: false,
-        isAuthenticated: true,
         user: {...action.user}
       };
     case SIGNUP_FAILURE:
       return {
         ...state,
-        isSubmitting: false,
         error: action.error,
       };
     case SIGNOUT_REQUEST:
       return {
         ...state,
-        isSubmitting: true,
       };
     case SIGN_OUT_SUCCESS:
       return {
@@ -71,7 +58,6 @@ const authReducer = (state = initialState, action) => {
     case SIGN_OUT_FAILURE:
       return {
         ...state,
-        isSubmitting: false,
         error: action.errMessage,
       }
     case RESET_AUTH_STATE:
