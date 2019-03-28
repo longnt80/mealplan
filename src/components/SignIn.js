@@ -42,6 +42,15 @@ const styles = theme => (
 
 export class TheForm extends Component {
   static propTypes = {
+    auth: shape({
+      isSubmitting: bool,
+      newUser: bool,
+      isAuthenticated: bool,
+      user: shape({
+        userEmail: string,
+      }),
+      error: string,
+    }).isRequired,
     signingIn: func,
     signInSuccess: func,
     signInFailure: func,
@@ -50,15 +59,6 @@ export class TheForm extends Component {
     signUpFailure: func,
     globalLoading: func,
     resetAuthState: func,
-    auth: shape({
-      isSubmitting: bool,
-      newUser: bool,
-      isAuthenticated: bool,
-      user: {
-        userEmail: string,
-      },
-      error: string,
-    }).isRequired,
     classes: objectOf(any),
     values: objectOf(string),
     handleBlur: func,
