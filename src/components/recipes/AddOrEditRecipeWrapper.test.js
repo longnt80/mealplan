@@ -42,40 +42,13 @@ const fakeMatch = {
 
 
 describe('<AddOrEditRecipeWrapper />', () => {
+  let wrapper;
+  beforeEach(() => {
+    wrapper = shallow(<AddOrEditRecipe />)
+  })
   it('renders full DOM of AddOrEditRecipeWrapper', () => {
-    const wrapper = mount(
-      <MuiThemeProvider theme={THEME}>
-        <MemoryRouter>
-          <AddOrEditRecipeWrapper location={fakeLocation} match={fakeMatch} history={mockHistory} />
-        </MemoryRouter>
-      </MuiThemeProvider>
-    );
-    expect(mountToJson(wrapper)).toMatchSnapshot();
+    console.log(wrapper.debug());
   });
 
-  // it('render AddOrEditRecipe to have correct number of ingredient field', () => {
-  //   const wrapper = mount(
-  //     <MuiThemeProvider theme={THEME}>
-  //       <BrowserRouter>
-  //         <AddOrEditRecipeWrapper location={fakeLocation} />
-  //       </BrowserRouter>
-  //     </MuiThemeProvider>
-  //   );
-  //   expect(wrapper.find('div.ingredientField')).toHaveLength(2);
-  // });
-
-  // it('render ingredient field correctly after click "More ingredient" button', () => {
-  //   const wrapper = mount(
-  //     <MuiThemeProvider theme={THEME}>
-  //       <BrowserRouter>
-  //         <AddOrEditRecipeWrapper location={fakeLocation} />
-  //       </BrowserRouter>
-  //     </MuiThemeProvider>
-  //   );
-  //   expect(wrapper.find('div.ingredientField')).toHaveLength(2);
-  //   expect(wrapper.findWhere(n => (n.text() === "More ingredient" && n.type() === "span"))).toHaveLength(1);
-  //   wrapper.findWhere(n => (n.text() === "More ingredient" && n.type() === "span")).simulate('click');
-  //   expect(wrapper.find('div.ingredientField')).toHaveLength(3);
-  // });
 });
 
