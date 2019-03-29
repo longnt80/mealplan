@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-import { getAllRecipes } from '../store/actions/recipesActions';
+import { getAllRecipes } from '../../store/actions/recipesActions';
 
 const styles = {
   paper: {

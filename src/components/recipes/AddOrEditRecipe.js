@@ -15,7 +15,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { STATUS } from './containers/AddOrEditRecipeWrapper';
+import { STATUS } from './AddOrEditRecipeWrapper';
 
 const styles = theme => ({
   paper: {

@@ -4,7 +4,7 @@ import firebase from '../../config/fbConfig';
 
 import { DB_RECIPES_COLLECTION } from '../../common/constants';
 
-import AddOrEditRecipe from '../AddOrEditRecipe';
+import AddOrEditRecipe from './AddOrEditRecipe';
 
 const db = firebase.firestore();
 
