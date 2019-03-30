@@ -18,6 +18,9 @@ const styles = {
     from: { transform: 'rotate(0deg)' },
     to: { transform: 'rotate(360deg)' }
   },
+  root: {
+    height: '100%',
+  },
   icon: {
     position: 'fixed',
     top: '50%',
@@ -45,8 +48,8 @@ class App extends Component {
     authUser: JSON.parse(localStorage.getItem('authUser')),
   }
 
-  // This is to prevent setState to run inside componentDidMount in case
-  //this component is un-mounted before onAuthStateChanged return its result
+  // This is to prevent setState in the callback of onAuthStateChanged to run in case
+  // this component is un-mounted before onAuthStateChanged return its result
   _isMounted = false;
 
   componentDidMount() {
@@ -80,7 +83,7 @@ class App extends Component {
 
     return (
       <Root>
-        <div className="App">
+        <div className={classes.root}>
           <Navbar isAuthenticated={isAuthenticated} />
           <Layout>
             <Router isAuthenticated={isAuthenticated} />

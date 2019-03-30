@@ -8,8 +8,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import RootRef from '@material-ui/core/RootRef';
 
-import SignedInLinks from './SignedInLinks';
+import { debounce } from 'lodash';
+
+import Navigation from './Navigation';
 
 const styles = {
   root: {
@@ -20,35 +23,59 @@ const styles = {
   },
 };
 
-const Navbar = ({ classes, auth, isAuthenticated }) => {
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            <Link component={RouterLink} to="/" color="inherit" underline="none">
-              MealPlan
-            </Link>
-          </Typography>
-          <div>
-            {isAuthenticated && <SignedInLinks />}
-          </div>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
-};
+class Navbar extends React.Component {
+  static propTypes = {
+    classes: PropTypes.objectOf(PropTypes.string).isRequired,
+    auth: PropTypes.shape({
+      isAuthenticated: PropTypes.bool,
+      isSubmitting: PropTypes.bool,
+      newUser: PropTypes.bool,
+      user: PropTypes.objectOf(PropTypes.string),
+      error: PropTypes.string,
+    }).isRequired,
+  };
 
-Navbar.propTypes = {
-  classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  auth: PropTypes.shape({
-    isAuthenticated: PropTypes.bool,
-    isSubmitting: PropTypes.bool,
-    newUser: PropTypes.bool,
-    user: PropTypes.objectOf(PropTypes.string),
-    error: PropTypes.string,
-  }).isRequired,
-};
+  constructor(props) {
+    super(props);
+    this.navbar = React.createRef();
+    this.state = {
+      navbarHeight: 0,
+    }
+  }
+
+  componentDidMount() {
+    this.updateHeight();
+
+    window.addEventListener('resize', debounce(this.updateHeight, 100));
+  }
+
+  updateHeight = () => {
+    this.setState({
+      navbarHeight: this.navbar.current.offsetHeight,
+    })
+  }
+
+  render() {
+    const { classes, auth, isAuthenticated } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <RootRef rootRef={this.navbar}>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" color="inherit" className={classes.grow}>
+                <Link component={RouterLink} to="/" color="inherit" underline="none">
+                  MealPlan
+                </Link>
+              </Typography>
+              <Navigation offsetTop={this.state.navbarHeight} isAuthenticated={isAuthenticated} />
+            </Toolbar>
+          </AppBar>
+        </RootRef>
+      </div>
+    );
+  }
+}
 
 export default connect(
   state => ({ auth: state.auth })

@@ -7,72 +7,79 @@ import Link from '@material-ui/core/Link';
 import { signOut } from '../store/actions/authActions';
 
 export const navbarLinkStyles = theme => ({
-  item: {
-    '&:not(:first-child)': {
-      marginLeft: "10px"
-    }
+  [theme.breakpoints.up('md')]: {
+    item: {
+      '&:not(:first-child)': {
+        marginLeft: "10px"
+      }
+    },
   },
   highlight: {
     color: theme.palette.secondary.dark
   }
 })
 
-const SignedInLinks = ({ classes, signingOut }) => {
-  return (
-    <React.Fragment>
-      <Link
-        component={RouterLink}
-        className={classes.item}
-        to="/"
-        color="inherit"
-        underline="none"
-      >
-      Home
-      </Link>
-      <Link
-        component={RouterLink}
-        className={classes.item}
-        to="/recipes"
-        color="inherit"
-        underline="none"
-      >
-      Recipes
-      </Link>
-      <Link
-        component={RouterLink}
-        className={classes.item}
-        to="/plan"
-        color="inherit"
-        underline="none"
-      >
-      Plan
-      </Link>
-      <Link
-        component={RouterLink}
-        className={classes.item}
-        to="/shopping"
-        color="inherit"
-        underline="none"
-      >
-      Shopping
-      </Link>
-      <Link
-        onClick={signingOut}
-        component={RouterLink}
-        className={[classes.item, classes.highlight].join(' ')}
-        to="/"
-        color="secondary"
-        underline="none"
-      >
-      Sign out
-      </Link>
-    </React.Fragment>
-  );
-};
+const PATHS = [
+  {name: "Home", to: '/'},
+  {name: "Recipes", to: '/recipes'},
+  {name: "Plan", to: '/plan'},
+  {name: "Shopping", to: '/shopping'},
+]
 
-SignedInLinks.propTypes = {
-  signingOut: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
+class SignedInLinks extends React.Component {
+  static propTypes = {
+    signingOut: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
+    toggleMenuState: PropTypes.func,
+  }
+
+  static defaultProps = {
+    toggleMenuState: () => {},
+  }
+
+  renderRouterLinks = () => {
+    const { classes, toggleMenuState } = this.props;
+    return PATHS.map(path => (
+      <Link
+        onClick={toggleMenuState}
+        key={path.name}
+        component={RouterLink}
+        className={classes.item}
+        to={path.to}
+        color="inherit"
+        underline="none"
+      >
+      {path.name}
+      </Link>
+    ));
+  }
+
+  handleSignOutClick = () => {
+    const { toggleMenuState, signingOut } = this.props;
+
+    signingOut();
+    toggleMenuState();
+  }
+
+  render() {
+    const { classes, signingOut } = this.props;
+
+    return (
+      <React.Fragment>
+        {this.renderRouterLinks()}
+
+        <Link
+          onClick={this.handleSignOutClick}
+          className={[classes.item, classes.highlight].join(' ')}
+          href="#"
+          color="secondary"
+          underline="none"
+        >
+        Sign out
+        </Link>
+      </React.Fragment>
+    );
+  }
 }
 
 const mapDispatchToProps = dispatch => ({
