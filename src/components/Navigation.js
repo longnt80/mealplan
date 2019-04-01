@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import SignedInLinks from './SignedInLinks';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import RootRef from '@material-ui/core/RootRef';
+import MenuLinks from './MenuLinks';
 
 const styles = theme => {
-  console.log(theme);
   return ({
     menuButton: {
       display: 'none',
@@ -47,7 +47,27 @@ class Navigation extends Component {
     this.state = {
       isOpen: false,
     }
+    this.menuBtnRef = React.createRef();
     this.menuRef = React.createRef();
+    this.nav = React.createRef();
+  }
+
+
+  componentDidMount() {
+    const { offsetTop } = this.props;
+
+    this.menuRef.current.style.paddingTop = `${offsetTop  }px`;
+    window.addEventListener('click', this.handleWindowClick)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.offsetTop !== prevProps.offsetTop) {
+      this.menuRef.current.style.paddingTop = `${this.props.offsetTop}px`;
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click');
   }
 
   toggleMenuState = () => {
@@ -56,15 +76,15 @@ class Navigation extends Component {
     }));
   }
 
-  componentDidMount() {
-    const { offsetTop } = this.props;
-    console.log(this.menuRef.current.style);
-    this.menuRef.current.style.paddingTop = offsetTop + "px";
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.offsetTop !== prevProps.offsetTop) {
-      this.menuRef.current.style.paddingTop = this.props.offsetTop + "px";
+  handleWindowClick = e => {
+    const { target } = e;
+    const { isOpen } = this.state;
+    const menuBtn = this.menuBtnRef.current;
+    const nav = this.nav.current;
+    if (!menuBtn.contains(target) && !nav.contains(target) && isOpen) {
+      this.setState({
+        isOpen: false
+      });
     }
   }
 
@@ -74,18 +94,21 @@ class Navigation extends Component {
 
     return (
       <React.Fragment>
-        <IconButton
-          disableRipple
-          onClick={this.toggleMenuState}
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="Menu">
-          <MenuIcon />
-        </IconButton>
+        <RootRef rootRef={this.menuBtnRef}>
+          <IconButton
+            disableRipple
+            onClick={this.toggleMenuState}
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="Menu"
+          >
+            <MenuIcon />
+          </IconButton>
+        </RootRef>
         <div className={[classes.navWrapper, dynamicClass].join(' ')}>
           <div ref={this.menuRef} className="navInnerWrapper">
-            <div className="nav">
-              {isAuthenticated && <SignedInLinks toggleMenuState={this.toggleMenuState} />}
+            <div ref={this.nav} className="nav">
+              <MenuLinks toggleMenuState={this.toggleMenuState} isAuthenticated={isAuthenticated} />
             </div>
           </div>
         </div>

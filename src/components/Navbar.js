@@ -40,6 +40,7 @@ class Navbar extends React.Component {
     this.navbar = React.createRef();
     this.state = {
       navbarHeight: 0,
+
     }
   }
 
@@ -50,8 +51,10 @@ class Navbar extends React.Component {
   }
 
   updateHeight = () => {
+    const navbarHeight = this.navbar.current.offsetHeight;
+    const addedPadding = window.matchMedia("(max-width: 959px)").matches ?  navbarHeight : 0;
     this.setState({
-      navbarHeight: this.navbar.current.offsetHeight,
+      navbarHeight: addedPadding,
     })
   }
 
