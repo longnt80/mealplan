@@ -38,7 +38,7 @@ class SignedInLinks extends React.Component {
   }
 
   renderRouterLinks = () => {
-    const { classes, toggleMenuState } = this.props;
+    const { classes, toggleMenuState, isAuthenticated } = this.props;
     return PATHS.map(path => (
       <Link
         onClick={toggleMenuState}
@@ -54,6 +54,46 @@ class SignedInLinks extends React.Component {
     ));
   }
 
+  renderAuthLinks = () => {
+    const { isAuthenticated, classes, toggleMenuState } = this.props;
+    if (isAuthenticated) {
+      return (
+        <Link
+          onClick={this.handleSignOutClick}
+          className={[classes.item, classes.highlight].join(' ')}
+          href="#"
+          color="secondary"
+          underline="none"
+        >
+        Sign out
+        </Link>
+      )
+    } else {
+      return (
+        <>
+          <Link
+            onClick={toggleMenuState}
+            component={ RouterLink }
+            className={[classes.item, classes.highlight].join(' ')}
+            to="/login"
+            color="secondary"
+            underline="none">
+          Sign in
+          </Link>
+          <Link
+            onClick={toggleMenuState}
+            component={ RouterLink }
+            className={[classes.item, classes.highlight].join(' ')}
+            to="/login"
+            color="secondary"
+            underline="none">
+          Sign up
+          </Link>
+        </>
+      )
+    }
+  }
+
   handleSignOutClick = () => {
     const { toggleMenuState, signingOut } = this.props;
 
@@ -67,16 +107,7 @@ class SignedInLinks extends React.Component {
     return (
       <React.Fragment>
         {this.renderRouterLinks()}
-
-        <Link
-          onClick={this.handleSignOutClick}
-          className={[classes.item, classes.highlight].join(' ')}
-          href="#"
-          color="secondary"
-          underline="none"
-        >
-        Sign out
-        </Link>
+        {this.renderAuthLinks()}
       </React.Fragment>
     );
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 import PrivateRoute from './PrivateRoute';
 import SignIn from './SignIn';
@@ -14,15 +14,15 @@ import NoMatch from './NoMatch';
 const Router = ({ isAuthenticated }) => {
   return (
     <Switch>
-      <PrivateRoute isAuthenticated={isAuthenticated} exact path="/" component={NextMeal} />
-      <PrivateRoute isAuthenticated={isAuthenticated} path="/recipes" component={AllRecipes} />
-      <PrivateRoute isAuthenticated={isAuthenticated} path="/add-recipe" component={AddOrEditRecipeWrapper} />
-      <PrivateRoute isAuthenticated={isAuthenticated} path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
-      <PrivateRoute isAuthenticated={isAuthenticated} path="/recipe/view/:id" component={ViewRecipe} />
-      <PrivateRoute isAuthenticated={isAuthenticated} path="/plan" component={Plan} />
-      <PrivateRoute isAuthenticated={isAuthenticated} path="/shopping" component={Shopping} />
+      <Route exact path="/" component={NextMeal} />
+      <Route path="/recipes" component={AllRecipes} />
+      <Route path="/add-recipe" component={AddOrEditRecipeWrapper} />
+      <Route path="/recipe/edit/:id" component={AddOrEditRecipeWrapper} />
+      <Route path="/recipe/view/:id" component={ViewRecipe} />
+      <Route path="/plan" component={Plan} />
+      <Route path="/shopping" component={Shopping} />
       <PrivateRoute isAuthenticated={isAuthenticated} path="/login" component={SignIn} />
-      <PrivateRoute isAuthenticated={isAuthenticated} component={NoMatch} />
+      <Route component={NoMatch} />
     </Switch>
   );
 };
