@@ -5,9 +5,9 @@ import { configure, shallow, mount, find, findWhere, simulate } from 'enzyme';
 import { shallowToJson, mountToJson } from 'enzyme-to-json';
 import { MemoryRouter } from "react-router-dom";
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import THEME from '../../common/theme';
-import AddOrEditRecipeWrapper from './AddOrEditRecipeWrapper';
-import AddOrEditRecipe from './AddOrEditRecipe';
+import THEME from '../src/common/theme';
+import AddOrEditRecipeWrapper from '../src/components/recipes/AddOrEditRecipeWrapper';
+import AddOrEditRecipe from '../src/components/recipes/AddOrEditRecipe';
 
 configure({ adapter: new Adapter() });
 

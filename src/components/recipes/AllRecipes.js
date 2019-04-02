@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-
-import { getAllRecipes } from '../../store/actions/recipesActions';
+import * as recipeActions from './actions';
+import firebase from '../../config/fbConfig';
 
 const styles = {
   paper: {
@@ -21,12 +20,17 @@ const styles = {
 class AllRecipes extends Component {
 
   componentDidMount() {
-    const { getAllRecipes } = this.props;
-
-    getAllRecipes();
+    const { auth, recipes, requestRecipes, getRecipesFromLocalStorage } = this.props;
+    if (auth.user) {
+      // TODO: get only first 20
+      // something like: getRecipes(limit, offset);
+      requestRecipes();
+    } else {
+      getRecipesFromLocalStorage();
+    }
   }
 
-  handleClick = recipe => e => {
+  handleClick = recipe => {
     const { history } = this.props;
 
     history.push(`/recipe/view/${recipe.id}`, { recipe: { ...recipe } });
@@ -34,11 +38,15 @@ class AllRecipes extends Component {
 
   renderList = () => {
     const { recipes, classes } = this.props;
-    if (!recipes) return "Loading list ..."
+    if (recipes.data === null) return "Loading list ..."
 
-    return recipes.map((recipe, index) => (
-      <Paper key={recipe.id} className={classes.paper} onClick={this.handleClick(recipe)}>{recipe.recipeName}</Paper>
+    const recipesList = recipes.data.map(recipe => (
+      <Paper key={recipe.id} className={classes.paper} onClick={() => this.handleClick(recipe)}>{recipe.recipeName}</Paper>
     ));
+
+    if (recipesList.length === 0) return "Please add a recipe."
+
+    return recipesList;
   }
 
   render() {
@@ -66,12 +74,19 @@ AllRecipes.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  recipes: state.recipesReducer,
+  recipes: state.recipes,
+  auth: state.auth,
 });
 
-const mapDispatchFromProps = dispatch => ({
-  getAllRecipes: () => dispatch(getAllRecipes()),
-});
+const mapDispatchFromProps = dispatch => {
+  const { requestRecipes, getRecipesFromLocalStorage } = recipeActions;
+
+  return ({
+    requestRecipes: () => dispatch(requestRecipes()),
+    getRecipesFromLocalStorage: () => dispatch(getRecipesFromLocalStorage()),
+  })
+};
+
 
 export default connect(
   mapStateToProps,

@@ -9,19 +9,21 @@ import {
   SIGNOUT_REQUEST,
   SIGN_OUT_SUCCESS,
   SIGN_OUT_FAILURE,
+  APP_LOADING_START,
+  APP_LOADING_END,
 } from '../constants';
-
-import { globalLoading } from './appActions';
 
 export const signInFailure = (error) => ({
   type: SIGNIN_FAILURE,
   error,
 });
 
-export const signInSuccess = (user) => ({
-  type: SIGNIN_SUCCESS,
-  user,
-});
+export const signInSuccess = (user) => {
+  return ({
+    type: SIGNIN_SUCCESS,
+    user,
+  })
+};
 
 export const signingIn = (email, password) => (dispatch, getState, { getFirebase })  => {
   const firebase = getFirebase();
@@ -72,16 +74,16 @@ export const signOut = () => (dispatch, getState, { getFirebase }) => {
     type: SIGNOUT_REQUEST,
   });
 
-  dispatch(globalLoading(true));
+  dispatch({type: APP_LOADING_START});
   auth.signOut()
     .then(() => {
-      dispatch(globalLoading(false));
+      dispatch({type: APP_LOADING_END});
       dispatch(signOutSuccess());
     })
     .catch((err) => {
       const errMessage = err.message;
 
-      dispatch(globalLoading(false));
+      dispatch({type: APP_LOADING_END});
       dispatch(signOutFailure(errMessage));
     })
 }

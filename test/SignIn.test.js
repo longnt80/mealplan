@@ -2,8 +2,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { shallowToJson } from 'enzyme-to-json';
-import { TheForm } from './SignIn';
-import '../enzymeSetup';
+import { TheForm } from '../src/components/SignIn';
+import '../src/enzymeSetup';
 
 const fakeAuth = {
   isSubmitting: false,

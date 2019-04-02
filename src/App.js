@@ -1,7 +1,7 @@
+/* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { BrowserRouter, Switch } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Cached from '@material-ui/icons/Cached';
@@ -10,7 +10,7 @@ import Root from './components/Root';
 import Router from './components/Router';
 import Navbar from './components/Navbar';
 import Layout from './components/Layout';
-
+import * as authActions from './store/actions/authActions';
 import firebase from './config/fbConfig';
 
 const styles = {
@@ -45,7 +45,7 @@ class App extends Component {
   }
 
   state = {
-    authUser: JSON.parse(localStorage.getItem('authUser')),
+    authUser: JSON.parse(localStorage.getItem('mp_authUser')),
   }
 
   // This is to prevent setState in the callback of onAuthStateChanged to run in case
@@ -53,20 +53,26 @@ class App extends Component {
   _isMounted = false;
 
   componentDidMount() {
+    const { signInSuccess, resetAuthState } = this.props;
     this._isMounted = true;
     firebase.auth().onAuthStateChanged(authUser => {
       if (this._isMounted) {
         if (authUser) {
           const { email } = authUser;
-          localStorage.setItem('authUser', JSON.stringify({ email, }));
+          const user = {
+            email,
+          };
+          window.localStorage.setItem('mp_authUser', JSON.stringify(user));
           this.setState({
-            authUser: { email },
-          })
+            authUser: {...user}
+          });
+          signInSuccess(user);
         } else {
-          localStorage.removeItem('authUser');
+          window.localStorage.removeItem('mp_authUser');
           this.setState({
-            authUser,
+            authUser: null,
           })
+          resetAuthState();
         }
       }
     })
@@ -77,9 +83,9 @@ class App extends Component {
   }
 
   render() {
-    const { app, classes } = this.props;
     const { authUser } = this.state;
-    const isAuthenticated = authUser !== null ? true : false;
+    const { app, classes } = this.props;
+    const isAuthenticated = authUser !== null;
 
     return (
       <Root>
@@ -102,8 +108,18 @@ class App extends Component {
 const mapStateToProps = state => ({
   app: state.app,
   auth: state.auth,
-})
+});
+
+const mapDispatchToProps = dispatch => {
+  const { signInSuccess, resetAuthState } = authActions;
+
+  return ({
+    signInSuccess: user => dispatch(signInSuccess(user)),
+    resetAuthState: () => dispatch(resetAuthState()),
+  })
+}
 
 export default connect(
   mapStateToProps,
+  mapDispatchToProps
 )(withStyles(styles)(App));

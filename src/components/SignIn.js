@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import * as authActions from '../store/actions/authActions';
-import { globalLoading as globalLoadingAction } from '../store/actions/appActions';
+import { APP_LOADING_START, APP_LOADING_END } from '../store/constants';
 
 const styles = theme => (
   {
@@ -57,7 +57,8 @@ export class TheForm extends Component {
     signingUp: func,
     signUpSuccess: func,
     signUpFailure: func,
-    globalLoading: func,
+    appStartLoading: func,
+    appEndLoading: func,
     resetAuthState: func,
     classes: objectOf(any),
     values: objectOf(string),
@@ -75,7 +76,8 @@ export class TheForm extends Component {
     signingUp: () => {},
     signUpSuccess: () => {},
     signUpFailure: () => {},
-    globalLoading: () => {},
+    appStartLoading: () => {},
+    appEndLoading: () => {},
     resetAuthState: () => {},
     classes: {},
     values: {},
@@ -99,7 +101,8 @@ export class TheForm extends Component {
       signingIn,
       signInSuccess,
       signInFailure,
-      globalLoading,
+      appStartLoading,
+      appEndLoading,
       signingUp,
       signUpSuccess,
       signUpFailure,
@@ -107,31 +110,31 @@ export class TheForm extends Component {
     const { email, password } = values;
 
     setSubmitting(true);
-    globalLoading(true);
+    appStartLoading()
 
     if (!isSignUp) {
       signingIn(email, password)
         .then(cred => {
           signInSuccess({ userEmail: cred.user.email });
           setSubmitting(false);
-          globalLoading(false);
+          appEndLoading();
         })
         .catch(err => {
           signInFailure(err.message);
           setSubmitting(false);
-          globalLoading(false);
+          appEndLoading();
         })
     } else {
       signingUp(email, password)
         .then((cred) => {
           signUpSuccess({ userEmail: cred.user.email });
           setSubmitting(false);
-          globalLoading(false);
+          appEndLoading();
         })
         .catch(err => {
           signUpFailure(err.message);
           setSubmitting(false);
-          globalLoading(false);
+          appEndLoading();
         })
     }
   }
@@ -251,7 +254,8 @@ const mapDispatchToProps = dispatch => {
     signUpSuccess: (user) => dispatch(signUpSuccess(user)),
     signUpFailure: error => dispatch(signUpFailure(error)),
     resetAuthState: () => dispatch(resetAuthState()),
-    globalLoading: (boolean) => dispatch(globalLoadingAction(boolean)),
+    appStartLoading: () => dispatch({type: APP_LOADING_START}),
+    appEndLoading: () => dispatch({type: APP_LOADING_END}),
   })
 }
 

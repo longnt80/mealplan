@@ -1,4 +1,4 @@
-import { APP_LOADING } from '../constants';
+import { APP_LOADING_START, APP_LOADING_END } from '../constants';
 
 const initialState = {
   loading: false,
@@ -6,9 +6,13 @@ const initialState = {
 
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
-    case APP_LOADING:
+    case APP_LOADING_START:
       return {
-        loading: action.state
+        loading: true,
+      }
+    case APP_LOADING_END:
+      return {
+        loading: false,
       }
     default:
       return state;

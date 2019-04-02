@@ -53,6 +53,7 @@
     "eslint-plugin-react": "^7.12.4",
     "prettier": "1.16.4",
     "react-test-renderer": "^16.8.4",
+    "react-testing-library": "^6.0.4",
     "redux-test-utils": "^0.3.0"
   }
 }

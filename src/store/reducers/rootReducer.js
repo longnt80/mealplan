@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import appReducer from './appReducer';
-import recipesReducer from './recipesReducer';
+import recipesReducer from '../../components/recipes/reducer';
 import authReducer from './authReducer';
 
 const rootReducer = combineReducers({
   app: appReducer,
   auth: authReducer,
-  recipesReducer,
+  recipes: recipesReducer,
 });
 
 export default rootReducer;
