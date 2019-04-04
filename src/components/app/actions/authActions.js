@@ -11,7 +11,8 @@ import {
   SIGN_OUT_FAILURE,
   APP_LOADING_START,
   APP_LOADING_END,
-} from '../constants';
+  RESET_AUTH_STATE_ON_FIREBASE_LISTENER,
+} from '../../../store/constants';
 
 export const signInFailure = (error) => ({
   type: SIGNIN_FAILURE,
@@ -56,6 +57,10 @@ export const signingUp = (email, password) => (dispatch, getState, { getFirebase
 
 export const resetAuthState = () => ({
   type: RESET_AUTH_STATE
+});
+
+export const resetAuthStateOnFirebaseListener = () => ({
+  type: RESET_AUTH_STATE_ON_FIREBASE_LISTENER
 });
 
 export const signOutSuccess = () => ({

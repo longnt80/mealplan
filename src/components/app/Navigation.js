@@ -89,7 +89,7 @@ class Navigation extends Component {
   }
 
   render() {
-    const { classes, isAuthenticated } = this.props;
+    const { classes } = this.props;
     const dynamicClass = this.state.isOpen ? "open" : "";
 
     return (
@@ -108,7 +108,7 @@ class Navigation extends Component {
         <div className={[classes.navWrapper, dynamicClass].join(' ')}>
           <div ref={this.menuRef} className="navInnerWrapper">
             <div ref={this.nav} className="nav">
-              <MenuLinks toggleMenuState={this.toggleMenuState} isAuthenticated={isAuthenticated} />
+              <MenuLinks toggleMenuState={this.toggleMenuState} />
             </div>
           </div>
         </div>

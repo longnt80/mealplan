@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import PropTypes from 'prop-types';
+import { objectOf, string, func, any } from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
-import { signOut } from '../store/actions/authActions';
+import * as appActions from './actions/appActions';
 
 export const navbarLinkStyles = theme => ({
   [theme.breakpoints.up('md')]: {
@@ -28,17 +29,19 @@ const PATHS = [
 
 class SignedInLinks extends React.Component {
   static propTypes = {
-    signingOut: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
-    toggleMenuState: PropTypes.func,
+    requestSignOut: func.isRequired,
+    appStatus: objectOf(any).isRequired,
+    classes: objectOf(string),
+    toggleMenuState: func,
   }
 
   static defaultProps = {
+    classes: {},
     toggleMenuState: () => {},
   }
 
   renderRouterLinks = () => {
-    const { classes, toggleMenuState, isAuthenticated } = this.props;
+    const { classes, toggleMenuState } = this.props;
     return PATHS.map(path => (
       <Link
         onClick={toggleMenuState}
@@ -49,14 +52,14 @@ class SignedInLinks extends React.Component {
         color="inherit"
         underline="none"
       >
-      {path.name}
+        {path.name}
       </Link>
     ));
   }
 
   renderAuthLinks = () => {
-    const { isAuthenticated, classes, toggleMenuState } = this.props;
-    if (isAuthenticated) {
+    const { appStatus, classes, toggleMenuState } = this.props;
+    if (appStatus.isAuthenticated) {
       return (
         <Link
           onClick={this.handleSignOutClick}
@@ -68,42 +71,42 @@ class SignedInLinks extends React.Component {
         Sign out
         </Link>
       )
-    } else {
+    }
       return (
         <>
           <Link
             onClick={toggleMenuState}
-            component={ RouterLink }
+            component={RouterLink}
             className={[classes.item, classes.highlight].join(' ')}
             to="/login"
             color="secondary"
-            underline="none">
+            underline="none"
+          >
           Sign in
           </Link>
           <Link
             onClick={toggleMenuState}
-            component={ RouterLink }
+            component={RouterLink}
             className={[classes.item, classes.highlight].join(' ')}
             to="/login"
             color="secondary"
-            underline="none">
+            underline="none"
+          >
           Sign up
           </Link>
         </>
       )
-    }
+
   }
 
   handleSignOutClick = () => {
-    const { toggleMenuState, signingOut } = this.props;
+    const { toggleMenuState, requestSignOut } = this.props;
 
-    signingOut();
+    requestSignOut();
     toggleMenuState();
   }
 
   render() {
-    const { classes, signingOut } = this.props;
-
     return (
       <React.Fragment>
         {this.renderRouterLinks()}
@@ -113,11 +116,19 @@ class SignedInLinks extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  signingOut: () => dispatch(signOut()),
+const mapStateToProps = state => ({
+  appStatus: state.appStatus,
 })
 
+const mapDispatchToProps = dispatch => {
+  const { requestSignOut } = appActions;
+
+  return ({
+    requestSignOut: () => dispatch(requestSignOut()),
+  })
+}
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(withStyles(navbarLinkStyles)(SignedInLinks));

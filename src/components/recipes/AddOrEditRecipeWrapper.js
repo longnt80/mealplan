@@ -3,7 +3,7 @@ import PropTypes, { any } from 'prop-types';
 import firebase from '../../config/fbConfig';
 
 import { DB_RECIPES_COLLECTION } from '../../common/constants';
-
+import AuthContext from '../../context';
 import AddOrEditRecipe from './AddOrEditRecipe';
 
 const db = firebase.firestore();
@@ -60,6 +60,8 @@ class AddOrEditRecipeWrapper extends Component {
     history: {},
   }
 
+  static contextType = AuthContext;
+
   constructor(props) {
     super(props)
     const { location } = this.props;
@@ -106,13 +108,21 @@ class AddOrEditRecipeWrapper extends Component {
     });
   }
 
-  addRecipe = recipe => {
+  addRecipeToLocalStorage = recipe => {
+    console.log("Add recipe to local storage");
+  };
+
+  updateRecipeToLocalStorage = recipe => {
+    console.log("Update recipe to local storage");
+  }
+
+  addRecipeToDatabase = recipe => {
     return db.collection(DB_RECIPES_COLLECTION).add({
       ...recipe
     });
   }
 
-  updateRecipe = recipe => {
+  updateRecipeToDatabase = recipe => {
     const { match } = this.props;
 
     return db.collection(DB_RECIPES_COLLECTION).doc(match.params.id).set(recipe, { merge: true });
@@ -132,6 +142,7 @@ class AddOrEditRecipeWrapper extends Component {
   handleFormSubmit = (recipe, status) => {
     const { history } = this.props;
     const { match } = this.props;
+    const isAuthenticated = this.context;
 
     // Remove empty ingredient fields
     const filteredIngredientsList = recipe.ingredients.filter(ingredient => ingredient.name !== "");
@@ -143,11 +154,19 @@ class AddOrEditRecipeWrapper extends Component {
     }
 
     if(status === STATUS.ADD) {
-      this.addRecipe(validRecipe)
-        .then(() => console.log("Added recipe"));
+      if (isAuthenticated) {
+        this.addRecipeToDatabase(validRecipe)
+          .then(() => console.log("Added recipe"));
+      } else {
+        this.addRecipeToLocalStorage(validRecipe);
+      }
     } else if (status === STATUS.EDIT) {
-      this.updateRecipe(validRecipe)
-        .then(() => console.log("Updated recipe"));
+      if (isAuthenticated) {
+        this.updateRecipeToDatabase(validRecipe)
+          .then(() => console.log("Updated recipe"));
+      } else {
+        this.updateRecipeToLocalStorage(validRecipe);
+      }
     }
 
     history.push(`/recipe/view/${match.params.id}`, { recipe: { ...validRecipe } });

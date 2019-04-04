@@ -3,13 +3,13 @@ import { Switch, Route } from 'react-router-dom';
 
 import PrivateRoute from './PrivateRoute';
 import SignIn from './SignIn';
-import NextMeal from './NextMeal';
-import AllRecipes from './recipes/AllRecipes';
-import ViewRecipe from './ViewRecipe';
-import AddOrEditRecipeWrapper from './recipes/AddOrEditRecipeWrapper';
-import Plan from './Plan';
-import Shopping from './Shopping';
-import NoMatch from './NoMatch';
+import NextMeal from '../NextMeal';
+import AllRecipes from '../recipes/AllRecipes';
+import ViewRecipe from '../recipes/ViewRecipe';
+import AddOrEditRecipeWrapper from '../recipes/AddOrEditRecipeWrapper';
+import Plan from '../Plan';
+import Shopping from '../Shopping';
+import NoMatch from '../NoMatch';
 
 const Router = ({ isAuthenticated }) => {
   return (

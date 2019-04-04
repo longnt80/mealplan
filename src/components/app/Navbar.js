@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { objectOf, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -25,15 +25,12 @@ const styles = {
 
 class Navbar extends React.Component {
   static propTypes = {
-    classes: PropTypes.objectOf(PropTypes.string).isRequired,
-    auth: PropTypes.shape({
-      isAuthenticated: PropTypes.bool,
-      isSubmitting: PropTypes.bool,
-      newUser: PropTypes.bool,
-      user: PropTypes.objectOf(PropTypes.string),
-      error: PropTypes.string,
-    }).isRequired,
+    classes: objectOf(string),
   };
+
+  static defaultProps = {
+    classes: {},
+  }
 
   constructor(props) {
     super(props);
@@ -59,7 +56,8 @@ class Navbar extends React.Component {
   }
 
   render() {
-    const { classes, auth, isAuthenticated } = this.props;
+    const { classes } = this.props;
+    const { navbarHeight } = this.state;
 
     return (
       <div className={classes.root}>
@@ -71,7 +69,7 @@ class Navbar extends React.Component {
                   MealPlan
                 </Link>
               </Typography>
-              <Navigation offsetTop={this.state.navbarHeight} isAuthenticated={isAuthenticated} />
+              <Navigation offsetTop={navbarHeight} />
             </Toolbar>
           </AppBar>
         </RootRef>
@@ -81,5 +79,5 @@ class Navbar extends React.Component {
 }
 
 export default connect(
-  state => ({ auth: state.auth })
+  state => ({ appStatus: state.app })
 )(withStyles(styles)(Navbar));

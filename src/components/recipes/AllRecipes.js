@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import * as recipeActions from './actions';
 import firebase from '../../config/fbConfig';
+import AuthContext from '../../context';
 
 const styles = {
   paper: {
@@ -18,10 +19,12 @@ const styles = {
 }
 
 class AllRecipes extends Component {
+  static contextType = AuthContext;
 
   componentDidMount() {
     const { auth, recipes, requestRecipes, getRecipesFromLocalStorage } = this.props;
-    if (auth.user) {
+    const isAuthenticated = this.context;
+    if (isAuthenticated) {
       // TODO: get only first 20
       // something like: getRecipes(limit, offset);
       requestRecipes();
@@ -30,18 +33,35 @@ class AllRecipes extends Component {
     }
   }
 
-  handleClick = recipe => {
-    const { history } = this.props;
+  componentDidUpdate(prevProps) {
+    const { auth, recipes, requestRecipes, getRecipesFromLocalStorage } = this.props;
 
-    history.push(`/recipe/view/${recipe.id}`, { recipe: { ...recipe } });
+    if (prevProps.auth.user !== auth.user) {
+      if (this.props.auth.user === null) {
+        getRecipesFromLocalStorage();
+      } else {
+        requestRecipes();
+      }
+    }
   }
 
-  renderList = () => {
+  handleClick = recipe => {
+    console.log("Hello");
+    const { history } = this.props;
+    const isAuthenticated = this.context;
+    console.log(isAuthenticated);
+
+    // TODO: should get data out of ingredient document reference here
+
+    // history.push(`/recipe/view/${recipe.id}`, { recipe: {...recipe} });
+  }
+
+  renderRecipesList = () => {
+    const isAuthenticated = this.context;
     const { recipes, classes } = this.props;
     if (recipes.data === null) return "Loading list ..."
-
     const recipesList = recipes.data.map(recipe => (
-      <Paper key={recipe.id} className={classes.paper} onClick={() => this.handleClick(recipe)}>{recipe.recipeName}</Paper>
+      <Paper key={recipe.id} className={classes.paper} onClick={() => this.handleClick(recipe)}>{recipe.name}</Paper>
     ));
 
     if (recipesList.length === 0) return "Please add a recipe."
@@ -62,7 +82,7 @@ class AllRecipes extends Component {
         />
 
         <div>
-          {this.renderList()}
+          {this.renderRecipesList()}
         </div>
       </div>
     );

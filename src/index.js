@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
 import { reduxFirestore, getFirestore } from 'redux-firestore';
 import rootReducer from './store/reducers/rootReducer';
-import App from './App';
+import App from './components/app/App';
 import fbConfig from './config/fbConfig';
 import * as serviceWorker from './serviceWorker';
 

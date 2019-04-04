@@ -9,13 +9,16 @@ import {
   SIGNOUT_REQUEST,
   SIGN_OUT_SUCCESS,
   SIGN_OUT_FAILURE,
-} from '../constants';
+  RESET_AUTH_STATE_ON_FIREBASE_LISTENER,
+} from '../../../store/constants';
 
 const initialState = {
   newUser: false,
   user: null,
   error: null,
 }
+
+
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -61,6 +64,8 @@ const authReducer = (state = initialState, action) => {
         error: action.errMessage,
       }
     case RESET_AUTH_STATE:
+      return {...initialState}
+    case RESET_AUTH_STATE_ON_FIREBASE_LISTENER:
       return {...initialState}
     default:
       return state;

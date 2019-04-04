@@ -3,21 +3,22 @@ import Button from '@material-ui/core/Button';
 
 class ViewRecipe extends Component {
 
-  handleClick = e => {
+  handleClick = () => {
     const { history } = this.props;
     const { recipe } = this.props.location.state;
 
-    // Remove the id for consistency between
+    // Remove the id for consistent format between
     // existing recipe and a new recipe
-    // id wil be stored in params
-    const noID = {...recipe};
-    delete noID.id;
+    // id will be stored in params
+    const recipeWithNoID = {...recipe};
+    delete recipeWithNoID.id;
 
-    history.push(`/recipe/edit/${recipe.id}`, { recipe: {...noID} });
+    history.push(`/recipe/edit/${recipe.id}`, { recipe: {...recipeWithNoID} });
   }
 
   ingredients = ingredientArray => {
     return ingredientArray.map(ingredient => {
+      console.log(ingredient);
       return (
         <li key={ingredient.id}>{ingredient.name}</li>
       );
@@ -29,20 +30,22 @@ class ViewRecipe extends Component {
 
     return (
       <div>
-        View recipe with id: {recipe.id}
+        {`View recipe with id: ${recipe.id}`}
 
-        <p>Name: {recipe.recipeName}</p>
-        <ul>
+        <p>{`Name: ${recipe.recipeName}`}</p>
+        {/* <ul>
           {this.ingredients(recipe.ingredients)}
-        </ul>
+        </ul> */}
 
         <Button
             // type="Submit"
             // className={classes.button}
-            onClick={this.handleClick}
-            color="primary"
-            variant="contained"
-            >Edit</Button>
+          onClick={this.handleClick}
+          color="primary"
+          variant="contained"
+        >
+        Edit
+        </Button>
       </div>
     );
   }

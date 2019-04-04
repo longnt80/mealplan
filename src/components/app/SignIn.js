@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { func, any, objectOf, bool, string, shape } from 'prop-types';
+import { func, any, objectOf, bool, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { withFormik } from 'formik';
 import { withStyles } from '@material-ui/core/styles';
@@ -9,8 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import * as authActions from '../store/actions/authActions';
-import { APP_LOADING_START, APP_LOADING_END } from '../store/constants';
+import * as appActions from './actions/appActions';
 
 const styles = theme => (
   {
@@ -42,50 +41,26 @@ const styles = theme => (
 
 export class TheForm extends Component {
   static propTypes = {
-    auth: shape({
-      isSubmitting: bool,
-      newUser: bool,
-      isAuthenticated: bool,
-      user: shape({
-        userEmail: string,
-      }),
-      error: string,
-    }).isRequired,
-    signingIn: func,
-    signInSuccess: func,
-    signInFailure: func,
-    signingUp: func,
-    signUpSuccess: func,
-    signUpFailure: func,
-    appStartLoading: func,
-    appEndLoading: func,
-    resetAuthState: func,
-    classes: objectOf(any),
+    appStatus: objectOf(any).isRequired,
+    requestSignIn: func.isRequired,
+    requestSignUp: func.isRequired,
+    classes: objectOf(string),
     values: objectOf(string),
-    handleBlur: func,
-    handleChange: func,
-    setSubmitting: func,
-    resetForm: func,
     isSubmitting: bool,
+    setSubmitting: func,
+    handleChange: func,
+    handleBlur: func,
+    resetForm: func,
   }
 
   static defaultProps = {
-    signingIn: () => {},
-    signInSuccess: () => {},
-    signInFailure: () => {},
-    signingUp: () => {},
-    signUpSuccess: () => {},
-    signUpFailure: () => {},
-    appStartLoading: () => {},
-    appEndLoading: () => {},
-    resetAuthState: () => {},
     classes: {},
     values: {},
-    handleBlur: () => {},
-    handleChange: () => {},
-    setSubmitting: () => {},
-    resetForm: () => {},
     isSubmitting: false,
+    setSubmitting: () => {},
+    handleChange: () => {},
+    handleBlur: () => {},
+    resetForm: () => {},
   }
 
   state = {
@@ -98,52 +73,30 @@ export class TheForm extends Component {
     const {
       setSubmitting,
       values,
-      signingIn,
-      signInSuccess,
-      signInFailure,
-      appStartLoading,
-      appEndLoading,
-      signingUp,
-      signUpSuccess,
-      signUpFailure,
+      requestSignIn,
+      requestSignUp,
     } = this.props;
     const { email, password } = values;
 
     setSubmitting(true);
-    appStartLoading()
 
     if (!isSignUp) {
-      signingIn(email, password)
-        .then(cred => {
-          signInSuccess({ userEmail: cred.user.email });
+      requestSignIn(email, password)
+        .then(() => {
           setSubmitting(false);
-          appEndLoading();
-        })
-        .catch(err => {
-          signInFailure(err.message);
-          setSubmitting(false);
-          appEndLoading();
         })
     } else {
-      signingUp(email, password)
-        .then((cred) => {
-          signUpSuccess({ userEmail: cred.user.email });
+      requestSignUp(email, password)
+        .then(() => {
           setSubmitting(false);
-          appEndLoading();
-        })
-        .catch(err => {
-          signUpFailure(err.message);
-          setSubmitting(false);
-          appEndLoading();
-        })
+        });
     }
   }
 
   handleClick = e => {
-    const { resetAuthState, resetForm } = this.props;
+    const { resetForm } = this.props;
     e.preventDefault();
 
-    resetAuthState();
     resetForm();
     this.setState((state) => ({
       isSignUp: !state.isSignUp
@@ -157,7 +110,7 @@ export class TheForm extends Component {
       handleBlur,
       values,
       isSubmitting,
-      auth,
+      appStatus,
     } = this.props;
     const { isSignUp } = this.state;
 
@@ -189,10 +142,10 @@ export class TheForm extends Component {
             fullWidth
             margin="normal"
           />
-          {auth.error !== null && (
+          {appStatus.error !== null && (
             <Paper className={classes.error} elevation={0}>
               <Typography color="inherit" variant="subtitle1">
-                {auth.error}
+                {appStatus.error}
               </Typography>
             </Paper>
           )}
@@ -232,30 +185,19 @@ const SignIn = withFormik({
 })(withStyles(styles)(TheForm));
 
 const mapStateToProps = state => ({
-  auth: state.auth,
+  // auth: state.auth,
+  appStatus: state.appStatus,
 });
 
 const mapDispatchToProps = dispatch => {
   const {
-    signingIn,
-    signInSuccess,
-    signInFailure,
-    signingUp,
-    signUpSuccess,
-    signUpFailure,
-    resetAuthState,
-  } = authActions;
+    requestSignIn,
+    requestSignUp,
+  } = appActions;
 
   return ({
-    signingIn: (email, password) => dispatch(signingIn(email, password)),
-    signInSuccess: user => dispatch(signInSuccess(user)),
-    signInFailure: error => dispatch(signInFailure(error)),
-    signingUp: (email, password) => dispatch(signingUp(email, password)),
-    signUpSuccess: (user) => dispatch(signUpSuccess(user)),
-    signUpFailure: error => dispatch(signUpFailure(error)),
-    resetAuthState: () => dispatch(resetAuthState()),
-    appStartLoading: () => dispatch({type: APP_LOADING_START}),
-    appEndLoading: () => dispatch({type: APP_LOADING_END}),
+    requestSignIn: (email, password) => dispatch(requestSignIn(email, password)),
+    requestSignUp: (email, password) => dispatch(requestSignUp(email, password)),
   })
 }
 
