@@ -18,7 +18,7 @@ const initialState = {
   isSigningIn: false,
   isSigningUp: false,
   isSigningOut: false,
-  authUser: JSON.parse(localStorage.getItem('mp_authUser')),
+  user: JSON.parse(localStorage.getItem('mp_authUser')),
   error: null,
 }
 
@@ -82,7 +82,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         isAuthenticated: action.isAuthenticated,
-        authUser: action.authUser,
+        user: action.user,
       }
     default:
       return state;

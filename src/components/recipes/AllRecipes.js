@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
-import PropTypes from 'prop-types';
+import { func, objectOf, string, any } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import * as recipeActions from './actions';
-import firebase from '../../config/fbConfig';
-import AuthContext from '../../context';
 
 const styles = {
   paper: {
@@ -19,12 +17,21 @@ const styles = {
 }
 
 class AllRecipes extends Component {
-  static contextType = AuthContext;
+  static propTypes = {
+    appStatus: objectOf(any).isRequired,
+    recipes: objectOf(any).isRequired,
+    requestRecipes: func.isRequired,
+    getRecipesFromLocalStorage: func.isRequired,
+    classes: objectOf(string),
+  };
+
+  static defaultProps = {
+    classes: {},
+  }
 
   componentDidMount() {
-    const { auth, recipes, requestRecipes, getRecipesFromLocalStorage } = this.props;
-    const isAuthenticated = this.context;
-    if (isAuthenticated) {
+    const { appStatus, requestRecipes, getRecipesFromLocalStorage } = this.props;
+    if (appStatus.isAuthenticated) {
       // TODO: get only first 20
       // something like: getRecipes(limit, offset);
       requestRecipes();
@@ -34,10 +41,10 @@ class AllRecipes extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { auth, recipes, requestRecipes, getRecipesFromLocalStorage } = this.props;
+    const { appStatus, requestRecipes, getRecipesFromLocalStorage } = this.props;
 
-    if (prevProps.auth.user !== auth.user) {
-      if (this.props.auth.user === null) {
+    if (prevProps.appStatus.user !== appStatus.user) {
+      if (appStatus.user === null) {
         getRecipesFromLocalStorage();
       } else {
         requestRecipes();
@@ -45,11 +52,8 @@ class AllRecipes extends Component {
     }
   }
 
-  handleClick = recipe => {
-    console.log("Hello");
-    const { history } = this.props;
-    const isAuthenticated = this.context;
-    console.log(isAuthenticated);
+  handleClick = () => {
+    // const { history } = this.props;
 
     // TODO: should get data out of ingredient document reference here
 
@@ -57,7 +61,6 @@ class AllRecipes extends Component {
   }
 
   renderRecipesList = () => {
-    const isAuthenticated = this.context;
     const { recipes, classes } = this.props;
     if (recipes.data === null) return "Loading list ..."
     const recipesList = recipes.data.map(recipe => (
@@ -89,13 +92,9 @@ class AllRecipes extends Component {
   }
 }
 
-AllRecipes.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
 const mapStateToProps = state => ({
   recipes: state.recipes,
-  auth: state.auth,
+  appStatus: state.appStatus,
 });
 
 const mapDispatchFromProps = dispatch => {

@@ -94,10 +94,11 @@ export class TheForm extends Component {
   }
 
   handleClick = e => {
-    const { resetForm } = this.props;
+    const { resetForm, resetErrorMessage } = this.props;
     e.preventDefault();
 
     resetForm();
+    resetErrorMessage();
     this.setState((state) => ({
       isSignUp: !state.isSignUp
     }));
@@ -193,11 +194,13 @@ const mapDispatchToProps = dispatch => {
   const {
     requestSignIn,
     requestSignUp,
+    resetErrorMessage,
   } = appActions;
 
   return ({
     requestSignIn: (email, password) => dispatch(requestSignIn(email, password)),
     requestSignUp: (email, password) => dispatch(requestSignUp(email, password)),
+    resetErrorMessage: () => dispatch(resetErrorMessage()),
   })
 }
 

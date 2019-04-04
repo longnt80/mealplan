@@ -86,7 +86,7 @@ export const requestSignOut = () => (dispatch, getState, { getFirebase }) => {
 export const FIREBASE_AUTH_OBSERVER_TRIGGERED = 'FIREBASE_AUTH_OBSERVER_TRIGGERED';
 export const fbAuthObserverTriggered = (isAuthenticated, authUser) => ({
   type: FIREBASE_AUTH_OBSERVER_TRIGGERED,
-  authUser,
+  user: authUser,
   isAuthenticated,
 })
 

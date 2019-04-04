@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes, { any } from 'prop-types';
 import firebase from '../../config/fbConfig';
 
 import { DB_RECIPES_COLLECTION } from '../../common/constants';
-import AuthContext from '../../context';
 import AddOrEditRecipe from './AddOrEditRecipe';
 
 const db = firebase.firestore();
@@ -59,8 +59,6 @@ class AddOrEditRecipeWrapper extends Component {
     match: {},
     history: {},
   }
-
-  static contextType = AuthContext;
 
   constructor(props) {
     super(props)
@@ -140,9 +138,7 @@ class AddOrEditRecipeWrapper extends Component {
   }
 
   handleFormSubmit = (recipe, status) => {
-    const { history } = this.props;
-    const { match } = this.props;
-    const isAuthenticated = this.context;
+    const { appStatus, history, match } = this.props;
 
     // Remove empty ingredient fields
     const filteredIngredientsList = recipe.ingredients.filter(ingredient => ingredient.name !== "");
@@ -154,14 +150,14 @@ class AddOrEditRecipeWrapper extends Component {
     }
 
     if(status === STATUS.ADD) {
-      if (isAuthenticated) {
+      if (appStatus.isAuthenticated) {
         this.addRecipeToDatabase(validRecipe)
           .then(() => console.log("Added recipe"));
       } else {
         this.addRecipeToLocalStorage(validRecipe);
       }
     } else if (status === STATUS.EDIT) {
-      if (isAuthenticated) {
+      if (appStatus.isAuthenticated) {
         this.updateRecipeToDatabase(validRecipe)
           .then(() => console.log("Updated recipe"));
       } else {
@@ -188,4 +184,10 @@ class AddOrEditRecipeWrapper extends Component {
   }
 }
 
-export default AddOrEditRecipeWrapper;
+const mapStateToProps = state => ({
+  appStatus: state.appStatus,
+})
+
+export default connect(
+  mapStateToProps,
+)(AddOrEditRecipeWrapper);
