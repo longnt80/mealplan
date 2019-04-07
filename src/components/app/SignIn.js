@@ -44,6 +44,7 @@ export class TheForm extends Component {
     appStatus: objectOf(any).isRequired,
     requestSignIn: func.isRequired,
     requestSignUp: func.isRequired,
+    resetErrorMessage: func.isRequired,
     classes: objectOf(string),
     values: objectOf(string),
     isSubmitting: bool,
@@ -65,6 +66,11 @@ export class TheForm extends Component {
 
   state = {
     isSignUp: false
+  }
+
+  componentWillUnmount() {
+    const { resetErrorMessage } = this.props;
+    resetErrorMessage();
   }
 
   handleFormSubmit = (e) => {
