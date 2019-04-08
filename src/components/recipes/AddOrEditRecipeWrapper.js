@@ -41,7 +41,7 @@ class AddOrEditRecipeWrapper extends Component {
       })
     }),
     history: objectOf(any),
-    viewRecipe: func.isRequired,
+    setCurrentViewedRecipe: func.isRequired,
   }
 
   static defaultProps = {
@@ -55,7 +55,6 @@ class AddOrEditRecipeWrapper extends Component {
     const recipeIsExisted = recipesState.viewedRecipe !== null;
     const recipe = recipeIsExisted ? recipesState.viewedRecipe.data : generateNewRecipe();
     const status = recipeIsExisted ? STATUS.EDIT : STATUS.ADD;
-    console.log(recipe);
     this.state = {
       status,
       recipe: {...recipe}
@@ -106,8 +105,7 @@ class AddOrEditRecipeWrapper extends Component {
     window.localStorage.setItem('mp_recipes', JSON.stringify(copiedRecipes));
   };
 
-  updateRecipeToLocalStorage = updatedRecipe => {
-    const { match: { params: { id } } } = this.props;
+  updateRecipeToLocalStorage = (id, updatedRecipe) => {
     const localStorageRecipes = JSON.parse(window.localStorage.getItem('mp_recipes'));
     const recipeIndex = localStorageRecipes.findIndex(recipe => recipe.id === id);
     // console.log({localStorageRecipes, recipeIndex});
@@ -124,11 +122,7 @@ class AddOrEditRecipeWrapper extends Component {
     });
   }
 
-  updateRecipeToDatabase = recipe => {
-    const { match: { params } } = this.props;
-
-    return db.collection(DB_RECIPES_COLLECTION).doc(params.id).set(recipe, { merge: true });
-  }
+  updateRecipeToDatabase = (id, recipe) => db.collection(DB_RECIPES_COLLECTION).doc(id).set(recipe, { merge: true });
 
   deleteRecipe = () => {
     const { match: { params }, history } = this.props;
@@ -141,7 +135,7 @@ class AddOrEditRecipeWrapper extends Component {
 
   handleFormSubmit = (recipe, status) => {
     // console.log(recipe);
-    const { appStatus, viewRecipe, history, match: { params } } = this.props;
+    const { appStatus, setCurrentViewedRecipe, history, match: { params } } = this.props;
     // Remove empty ingredient fields
     const filteredIngredientsList = recipe.ingredients.filter(ingredient => ingredient.name !== "");
     const validRecipe = {
@@ -155,7 +149,7 @@ class AddOrEditRecipeWrapper extends Component {
 
       if (appStatus.isAuthenticated) {
         this.addRecipeToDatabase(validRecipe).then(docRef => {
-          viewRecipe({
+          setCurrentViewedRecipe({
             id: docRef.id,
             data: {...validRecipe}
           });
@@ -165,7 +159,7 @@ class AddOrEditRecipeWrapper extends Component {
         const id = `temp-recipe-${Date.now()}`;
 
         this.addRecipeToLocalStorage(validRecipe, id);
-        viewRecipe({
+        setCurrentViewedRecipe({
           id,
           data: {...validRecipe}
         })
@@ -173,9 +167,17 @@ class AddOrEditRecipeWrapper extends Component {
       }
     } else if (status === STATUS.EDIT) {
       if (appStatus.isAuthenticated) {
-        this.updateRecipeToDatabase(validRecipe)
+        this.updateRecipeToDatabase(params.id, validRecipe)
+        setCurrentViewedRecipe({
+          id: params.id,
+          data: {...validRecipe}
+        })
       } else {
-        this.updateRecipeToLocalStorage(validRecipe);
+        this.updateRecipeToLocalStorage(params.id, validRecipe);
+        setCurrentViewedRecipe({
+          id: params.id,
+          data: {...validRecipe}
+        })
       }
       history.push(`/recipe/view/${params.id}`, { recipe: { ...validRecipe } });
     }
@@ -204,10 +206,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-  const { viewRecipe } = recipesActions;
+  const { setCurrentViewedRecipe } = recipesActions;
 
   return ({
-    viewRecipe: recipe => dispatch(viewRecipe(recipe))
+    setCurrentViewedRecipe: recipe => dispatch(setCurrentViewedRecipe(recipe))
   })
 }
 

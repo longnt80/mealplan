@@ -52,10 +52,10 @@ class AllRecipes extends Component {
   }
 
   handleClickOnRecipe = recipe => {
-    const { history, viewRecipe } = this.props;
+    const { history, setCurrentViewedRecipe } = this.props;
 
 
-    viewRecipe(recipe);
+    setCurrentViewedRecipe(recipe);
     history.push(`/recipe/view/${recipe.id}`, { recipeID: recipe.id });
   }
 
@@ -97,12 +97,12 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchFromProps = dispatch => {
-  const { requestRecipes, getRecipesFromLocalStorage, viewRecipe } = recipeActions;
+  const { requestRecipes, getRecipesFromLocalStorage, setCurrentViewedRecipe } = recipeActions;
 
   return ({
     requestRecipes: () => dispatch(requestRecipes()),
     getRecipesFromLocalStorage: () => dispatch(getRecipesFromLocalStorage()),
-    viewRecipe: recipe => dispatch(viewRecipe(recipe)),
+    setCurrentViewedRecipe: recipe => dispatch(setCurrentViewedRecipe(recipe)),
   })
 };
 

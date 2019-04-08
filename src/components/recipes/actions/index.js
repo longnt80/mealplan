@@ -56,7 +56,7 @@ export const getRecipesFromLocalStorage = () => dispatch => {
 }
 
 export const VIEW_RECIPE = 'VIEW_RECIPE';
-export const viewRecipe = recipe => ({
+export const setCurrentViewedRecipe = recipe => ({
   type: VIEW_RECIPE,
   recipe,
 })

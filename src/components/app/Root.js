@@ -1,5 +1,7 @@
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react';
-import { BrowserRouter, Switch } from "react-router-dom";
+import { node } from 'prop-types';
+import { BrowserRouter } from "react-router-dom";
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import THEME from '../../common/theme';
@@ -15,5 +17,9 @@ const Root = ({ children }) => {
     </MuiThemeProvider>
   );
 };
+
+Root.propTypes = {
+  children: node.isRequired,
+}
 
 export default withStyles(globalStyles)(Root);
