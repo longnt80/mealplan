@@ -4,7 +4,7 @@ import recipesReducer from '../../components/recipes/reducer';
 
 const rootReducer = combineReducers({
   appStatus: appReducer,
-  recipes: recipesReducer,
+  recipesState: recipesReducer,
 });
 
 export default rootReducer;

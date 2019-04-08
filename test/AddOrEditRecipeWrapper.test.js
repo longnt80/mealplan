@@ -15,7 +15,7 @@ const fakeLocation = {
   state: {
     recipe: {
       description: "You need to make something",
-      recipeName: "A hamburger",
+      name: "A hamburger",
       ingredients: [
         {
           name: "Sone ingredient",

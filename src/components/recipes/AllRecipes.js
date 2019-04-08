@@ -19,7 +19,6 @@ const styles = {
 class AllRecipes extends Component {
   static propTypes = {
     appStatus: objectOf(any).isRequired,
-    recipes: objectOf(any).isRequired,
     requestRecipes: func.isRequired,
     getRecipesFromLocalStorage: func.isRequired,
     classes: objectOf(string),
@@ -52,19 +51,19 @@ class AllRecipes extends Component {
     }
   }
 
-  handleClick = () => {
-    // const { history } = this.props;
+  handleClickOnRecipe = recipe => {
+    const { history, viewRecipe } = this.props;
 
-    // TODO: should get data out of ingredient document reference here
 
-    // history.push(`/recipe/view/${recipe.id}`, { recipe: {...recipe} });
+    viewRecipe(recipe);
+    history.push(`/recipe/view/${recipe.id}`, { recipeID: recipe.id });
   }
 
   renderRecipesList = () => {
-    const { recipes, classes } = this.props;
-    if (recipes.data === null) return "Loading list ..."
-    const recipesList = recipes.data.map(recipe => (
-      <Paper key={recipe.id} className={classes.paper} onClick={() => this.handleClick(recipe)}>{recipe.name}</Paper>
+    const { recipesState, classes } = this.props;
+    if (recipesState.data === null) return "Loading list ..."
+    const recipesList = recipesState.data.map(recipe => (
+      <Paper key={recipe.id} className={classes.paper} onClick={() => this.handleClickOnRecipe(recipe)}>{recipe.data.name}</Paper>
     ));
 
     if (recipesList.length === 0) return "Please add a recipe."
@@ -93,16 +92,17 @@ class AllRecipes extends Component {
 }
 
 const mapStateToProps = state => ({
-  recipes: state.recipes,
   appStatus: state.appStatus,
+  recipesState: state.recipesState,
 });
 
 const mapDispatchFromProps = dispatch => {
-  const { requestRecipes, getRecipesFromLocalStorage } = recipeActions;
+  const { requestRecipes, getRecipesFromLocalStorage, viewRecipe } = recipeActions;
 
   return ({
     requestRecipes: () => dispatch(requestRecipes()),
     getRecipesFromLocalStorage: () => dispatch(getRecipesFromLocalStorage()),
+    viewRecipe: recipe => dispatch(viewRecipe(recipe)),
   })
 };
 

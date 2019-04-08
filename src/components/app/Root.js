@@ -10,8 +10,8 @@ const Root = ({ children }) => {
     <MuiThemeProvider theme={THEME}>
       <CssBaseline />
       <BrowserRouter>
-          {children}
-        </BrowserRouter>
+        {children}
+      </BrowserRouter>
     </MuiThemeProvider>
   );
 };

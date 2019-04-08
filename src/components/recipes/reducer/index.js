@@ -2,13 +2,15 @@ import {
   REQUEST_RECIPES,
   REQUEST_RECIPES_SUCCESS,
   REQUEST_RECIPES_FAILURE,
-  // GET_NO_RECIPE,
-} from '../../../store/constants';
+  RESET_ERROR_MESSAGE_RECIPES,
+  VIEW_RECIPE,
+} from '../actions';
 
 const initialState = {
-  isGettingRecipes: false,
+  isFetching: false,
+  data: [],
+  viewedRecipe: null,
   error: null,
-  data: null,
 };
 
 const recipesReducer = (state = initialState, action) => {
@@ -16,18 +18,32 @@ const recipesReducer = (state = initialState, action) => {
     case REQUEST_RECIPES:
       return {
         ...state,
-        isGettingRecipes: true,
+        isFetching: true,
       };
     case REQUEST_RECIPES_SUCCESS:
       return {
-        isGettingRecipes: false,
-        data: [...action.data]
+        ...state,
+        isFetching: false,
+        data: [...action.data],
+        viewedRecipe: null,
       }
     case REQUEST_RECIPES_FAILURE:
       return {
-        isGettingRecipes: false,
-        data: null,
+        ...state,
+        isFetching: false,
+        data: [],
+        viewedRecipe: null,
         error: action.error,
+      }
+    case RESET_ERROR_MESSAGE_RECIPES:
+      return {
+        ...state,
+        error: null,
+      }
+    case VIEW_RECIPE:
+      return {
+        ...state,
+        viewedRecipe: {...action.recipe}
       }
     default:
       return state;

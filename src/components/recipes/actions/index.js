@@ -1,25 +1,16 @@
 /* eslint-disable import/prefer-default-export */
-import {
-  REQUEST_RECIPES,
-  REQUEST_RECIPES_SUCCESS,
-  REQUEST_RECIPES_FAILURE,
-  // GET_NO_RECIPE,
-} from '../../../store/constants';
+export const RESET_ERROR_MESSAGE_RECIPES = 'RESET_ERROR_MESSAGE_RECIPES';
+export const resetRecipesErrorMessage = () => ({
+  type: RESET_ERROR_MESSAGE_RECIPES,
+});
 
-/*
-  Possible actions:
-    - Requesting recipes
-    - Requesting recipes SUCCESS:
-      - EMPTY
-      - NOT EMPTY
-    - Requesting recipes ERROR
-*/
-
+export const REQUEST_RECIPES_SUCCESS = 'REQUEST_RECIPES_SUCCESS';
 export const requestRecipesSuccess = data => ({
   type: REQUEST_RECIPES_SUCCESS,
   data,
 });
 
+export const REQUEST_RECIPES_FAILURE = 'REQUEST_RECIPES_FAILURE';
 export const requestRecipesFailure = error => ({
   type: REQUEST_RECIPES_FAILURE,
   error,
@@ -28,7 +19,7 @@ export const requestRecipesFailure = error => ({
 // export const getNoRecipe = () => ({
 //   type: GET_NO_RECIPE,
 // })
-
+export const REQUEST_RECIPES = 'REQUEST_RECIPES';
 export const requestRecipes = () => {
   return (dispatch, getState, { getFirestore }) => {
     const firestore = getFirestore();
@@ -43,8 +34,8 @@ export const requestRecipes = () => {
           const rest = doc.data();
           const { id } = doc;
           return {
-            ...rest,
             id,
+            data: {...rest}
           };
         });
 
@@ -54,14 +45,18 @@ export const requestRecipes = () => {
   }
 }
 
+export const REQUEST_RECIPES_FROM_LOCAL_STORAGE = 'REQUEST_RECIPES_FROM_LOCAL_STORAGE'
 export const getRecipesFromLocalStorage = () => dispatch => {
-  const recipes = window.localStorage.getItem('mp_recipes');
+  const mpRecipes = JSON.parse(window.localStorage.getItem('mp_recipes'));
+  const recipes = mpRecipes !== null ? mpRecipes : [];
   dispatch({
-    type: 'REQUEST_RECIPES_FROM_LOCAL_STORAGE'
+    type: REQUEST_RECIPES_FROM_LOCAL_STORAGE
   })
-  if (recipes !== null) {
-    dispatch(requestRecipesSuccess(recipes));
-  } else {
-    dispatch(requestRecipesSuccess([]));
-  }
+  dispatch(requestRecipesSuccess(recipes));
 }
+
+export const VIEW_RECIPE = 'VIEW_RECIPE';
+export const viewRecipe = recipe => ({
+  type: VIEW_RECIPE,
+  recipe,
+})

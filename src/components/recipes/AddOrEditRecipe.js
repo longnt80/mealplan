@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { withFormik } from 'formik';
 import * as Yup from 'yup';
 import { withStyles } from '@material-ui/core/styles';
-
 import { Link } from 'react-router-dom';
-
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
@@ -37,7 +35,7 @@ const styles = theme => ({
 });
 
 const schema = Yup.object().shape({
-  recipeName: Yup.string().required('This is a required field'),
+  name: Yup.string().required('This is a required field'),
 });
 
 class MyForm extends Component {
@@ -46,7 +44,7 @@ class MyForm extends Component {
     deleteIngredientField: PropTypes.func.isRequired,
     addIngredientField: PropTypes.func.isRequired,
     initialFields: PropTypes.shape({
-      recipeName: PropTypes.string,
+      name: PropTypes.string,
       direction: PropTypes.string,
       ingredients: PropTypes.arrayOf(PropTypes.shape({
         amount: PropTypes.number,
@@ -90,8 +88,7 @@ class MyForm extends Component {
               <FormHelperText error={!!errors.ingredients}>
                 {errors.ingredients}
               </FormHelperText>
-) : null
-              }
+              ) : null}
           </Grid>
           <Grid item xs={12} sm={2}>
             <Grid container justify="center">
@@ -129,18 +126,18 @@ class MyForm extends Component {
           <Typography variant="h5" component="h2">Recipe's name:</Typography>
           <TextField
             label="Name"
-            name="recipeName"
-            error={!!errors.recipeName}
+            name="name"
+            error={!!errors.name}
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.recipeName}
+            value={values.name}
           />
-          {errors.recipeName && touched.recipeName ? (
+          {errors.name && touched.name ? (
             <FormHelperText
               id="component-error-text"
-              error={!!errors.recipeName}
+              error={!!errors.name}
             >
-              {errors.recipeName}
+              {errors.name}
             </FormHelperText>
             ) : null
           }

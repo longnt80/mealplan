@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes, { any } from 'prop-types';
-import firebase from '../../config/fbConfig';
-
+import { shape, string, objectOf, any, func } from 'prop-types';
 import { DB_RECIPES_COLLECTION } from '../../common/constants';
 import AddOrEditRecipe from './AddOrEditRecipe';
+import * as recipesActions from  './actions';
+import firebase from '../../config/fbConfig';
 
 const db = firebase.firestore();
 
@@ -12,7 +12,8 @@ const generateNewRecipe = () => {
   const time = Date.now();
 
   return {
-    recipeName: '',
+    createdBy: null,
+    name: '',
     ingredients: [
       {
         name: "",
@@ -32,40 +33,29 @@ export const STATUS = {
 
 class AddOrEditRecipeWrapper extends Component {
   static propTypes = {
-    location: PropTypes.shape({
-      state: PropTypes.shape({
-        recipe: PropTypes.shape({
-          recipeName: PropTypes.string,
-          direction: PropTypes.string,
-          ingredients: PropTypes.arrayOf(PropTypes.shape({
-            amount: PropTypes.number,
-            id: PropTypes.string,
-            name: PropTypes.string,
-            unit: PropTypes.string
-          }))
-        })
+    appStatus: objectOf(any).isRequired,
+    recipesState: objectOf(any).isRequired,
+    match: shape({
+      params: shape({
+        id: string
       })
     }),
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string
-      })
-    }),
-    history: PropTypes.objectOf(any),
+    history: objectOf(any),
+    viewRecipe: func.isRequired,
   }
 
   static defaultProps = {
-    location: {},
     match: {},
     history: {},
   }
 
   constructor(props) {
     super(props)
-    const { location } = this.props;
-    const recipeIsExisted = location.state && location.state.recipe;
-    const recipe = recipeIsExisted ? location.state.recipe : generateNewRecipe();
+    const { recipesState } = this.props;
+    const recipeIsExisted = recipesState.viewedRecipe !== null;
+    const recipe = recipeIsExisted ? recipesState.viewedRecipe.data : generateNewRecipe();
     const status = recipeIsExisted ? STATUS.EDIT : STATUS.ADD;
+    console.log(recipe);
     this.state = {
       status,
       recipe: {...recipe}
@@ -106,12 +96,26 @@ class AddOrEditRecipeWrapper extends Component {
     });
   }
 
-  addRecipeToLocalStorage = recipe => {
-    console.log("Add recipe to local storage");
+  addRecipeToLocalStorage = (newRecipe, newID) => {
+    const { recipesState } = this.props;
+    const copiedRecipes = [...recipesState.data]
+    copiedRecipes.push({
+      id: newID,
+      data: {...newRecipe}
+    });
+    window.localStorage.setItem('mp_recipes', JSON.stringify(copiedRecipes));
   };
 
-  updateRecipeToLocalStorage = recipe => {
-    console.log("Update recipe to local storage");
+  updateRecipeToLocalStorage = updatedRecipe => {
+    const { match: { params: { id } } } = this.props;
+    const localStorageRecipes = JSON.parse(window.localStorage.getItem('mp_recipes'));
+    const recipeIndex = localStorageRecipes.findIndex(recipe => recipe.id === id);
+    // console.log({localStorageRecipes, recipeIndex});
+    localStorageRecipes.splice(recipeIndex, 1, {
+      id,
+      data: {...updatedRecipe},
+    });
+    window.localStorage.setItem('mp_recipes', JSON.stringify(localStorageRecipes));
   }
 
   addRecipeToDatabase = recipe => {
@@ -121,25 +125,23 @@ class AddOrEditRecipeWrapper extends Component {
   }
 
   updateRecipeToDatabase = recipe => {
-    const { match } = this.props;
+    const { match: { params } } = this.props;
 
-    return db.collection(DB_RECIPES_COLLECTION).doc(match.params.id).set(recipe, { merge: true });
+    return db.collection(DB_RECIPES_COLLECTION).doc(params.id).set(recipe, { merge: true });
   }
 
   deleteRecipe = () => {
-    const { history } = this.props;
-    const { match } = this.props;
+    const { match: { params }, history } = this.props;
 
-    db.collection(DB_RECIPES_COLLECTION).doc(match.params.id).delete()
+    db.collection(DB_RECIPES_COLLECTION).doc(params.id).delete()
       .then(() => {
-        console.log("Deleted");
         history.push('/recipes')
       });
   }
 
   handleFormSubmit = (recipe, status) => {
-    const { appStatus, history, match } = this.props;
-
+    // console.log(recipe);
+    const { appStatus, viewRecipe, history, match: { params } } = this.props;
     // Remove empty ingredient fields
     const filteredIngredientsList = recipe.ingredients.filter(ingredient => ingredient.name !== "");
     const validRecipe = {
@@ -150,22 +152,34 @@ class AddOrEditRecipeWrapper extends Component {
     }
 
     if(status === STATUS.ADD) {
+
       if (appStatus.isAuthenticated) {
-        this.addRecipeToDatabase(validRecipe)
-          .then(() => console.log("Added recipe"));
+        this.addRecipeToDatabase(validRecipe).then(docRef => {
+          viewRecipe({
+            id: docRef.id,
+            data: {...validRecipe}
+          });
+          history.push(`/recipe/view/${docRef.id}`, { recipe: { ...validRecipe } });
+        })
       } else {
-        this.addRecipeToLocalStorage(validRecipe);
+        const id = `temp-recipe-${Date.now()}`;
+
+        this.addRecipeToLocalStorage(validRecipe, id);
+        viewRecipe({
+          id,
+          data: {...validRecipe}
+        })
+        history.push(`/recipe/view/${id}`, { recipe: { ...validRecipe } });
       }
     } else if (status === STATUS.EDIT) {
       if (appStatus.isAuthenticated) {
         this.updateRecipeToDatabase(validRecipe)
-          .then(() => console.log("Updated recipe"));
       } else {
         this.updateRecipeToLocalStorage(validRecipe);
       }
+      history.push(`/recipe/view/${params.id}`, { recipe: { ...validRecipe } });
     }
 
-    history.push(`/recipe/view/${match.params.id}`, { recipe: { ...validRecipe } });
   }
 
   render() {
@@ -185,9 +199,19 @@ class AddOrEditRecipeWrapper extends Component {
 }
 
 const mapStateToProps = state => ({
+  recipesState: state.recipesState,
   appStatus: state.appStatus,
-})
+});
+
+const mapDispatchToProps = dispatch => {
+  const { viewRecipe } = recipesActions;
+
+  return ({
+    viewRecipe: recipe => dispatch(viewRecipe(recipe))
+  })
+}
 
 export default connect(
   mapStateToProps,
+  mapDispatchToProps
 )(AddOrEditRecipeWrapper);
