@@ -84,6 +84,7 @@ class AddOrEditRecipeWrapper extends Component {
 
   deleteIngredientField = (id, currentValues) => {
     const newIngredientList = currentValues.ingredients.filter(ingredient => ingredient.id !== id);
+    if (newIngredientList.length === 0) return;
 
     this.setState({
       recipe: {
